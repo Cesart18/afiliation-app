@@ -26,3 +26,5 @@ export 'widgets/buttons/custom_dropdown_button.dart';
 export 'widgets/search_delegate/search_delegate_input.dart';
 // user_table
 export 'widgets/table/users_table.dart';
+// dialogs
+export 'widgets/dialogs/delete_user_dialog.dart';

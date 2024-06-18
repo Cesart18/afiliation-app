@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomDrowdownButton extends StatelessWidget {
+  final bool initialSelection;
   final Function(bool?)? onSelected;
-  const CustomDrowdownButton({super.key, this.onSelected});
+  const CustomDrowdownButton({super.key, this.onSelected, required this.initialSelection});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class CustomDrowdownButton extends StatelessWidget {
           focusedBorder: border,
           disabledBorder: border),
         label: const Text('¿Es Doctor?'),
-        initialSelection: false,
+        initialSelection: initialSelection,
         onSelected: onSelected,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: true, label: 'Si'),

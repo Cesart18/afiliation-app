@@ -1,9 +1,8 @@
-import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
-import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
+import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 
 final userFormInputProvider = StateNotifierProvider.autoDispose<
     UserFormInputNotifier, UserFormInputState>((ref) {
@@ -50,8 +49,8 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(isPosting: true);
 
     await userNotifier.createNewUser(
-        firstName: state.firstName.value,
-        lastName: state.lastName.value,
+        firstName: state.firstName.value.trim().toLowerCase(),
+        lastName: state.lastName.value.trim().toLowerCase(),
         amount: state.amount.value,
         isDoctor: state.isDoctor);
 
@@ -107,7 +106,7 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
   }
 }
 
-// ! la logica que puedo implementar para usuario existente es que al abrirlo los value de los inputs sean sus valores
+// TODO: la logica que puedo implementar para usuario existente es que al abrirlo los value de los inputs sean sus valores
 
 class UserFormInputState {
   final FirstName firstName;

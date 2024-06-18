@@ -31,6 +31,9 @@ class UsersNotifier extends StateNotifier<UsersState> {
     await userRepository.addNewUser(newUser, newHistorial);
   }
 
+  Future<void> deleteUser( int userId ) async {
+    await userRepository.deleteUser(userId);
+  }
   
 
 }

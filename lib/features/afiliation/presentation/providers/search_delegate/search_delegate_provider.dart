@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final searchDelegateProvider = StateNotifierProvider<SearchDelegateNotifier, SearchDelegateState>((ref) {
@@ -10,7 +9,7 @@ class SearchDelegateNotifier extends StateNotifier<SearchDelegateState> {
 
   onInputChanged( String value ){
     state = state.copyWith(
-      query: value
+      query: value.trim().toLowerCase()
     );
   }
   

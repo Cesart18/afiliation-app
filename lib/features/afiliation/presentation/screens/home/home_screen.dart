@@ -21,10 +21,13 @@ class HomeScreen extends ConsumerWidget {
         actions: [
 
         /// Toggle theme icon
-          IconButton(onPressed: (){
-            ref.read(appThemeProvider.notifier).update((state) => !state);
-          }, icon: Icon( isDarkmode ? Icons.light_mode_sharp : Icons.brightness_2  ,
-          color: colors.onSurface,)),
+          Tooltip(
+            message: 'Cambiar tema',
+            child: IconButton(onPressed: (){
+              ref.read(appThemeProvider.notifier).update((state) => !state);
+            }, icon: Icon( isDarkmode ? Icons.light_mode_sharp : Icons.brightness_2  ,
+            color: colors.onSurface,)),
+          ),
           const SizedBox(width: 20,),
         ],
       ),

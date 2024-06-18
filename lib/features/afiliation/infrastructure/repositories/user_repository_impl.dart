@@ -11,8 +11,8 @@ class UserRepositoryImpl implements UserRepository{
   UserRepositoryImpl({UserDatasource? datasource}):datasource = datasource ?? UserDatasourceImpl();
 
   @override
-  Future<void> addNewUser(User user) {
-    return datasource.addNewUser(user);
+  Future<void> addNewUser(User user, UserHistorial historial) {
+    return datasource.addNewUser(user, historial);
   }
 
   @override
@@ -33,5 +33,10 @@ class UserRepositoryImpl implements UserRepository{
   @override
   Future<void> updateUser(User user) {
     return datasource.updateUser(user);
+  }
+  
+  @override
+  Future<void> addNewHistorial(int userId, UserHistorial historial) {
+    return datasource.addNewHistorial(userId, historial);
   }
 }

@@ -13,7 +13,7 @@ class UserDatasourceImpl implements UserDatasource{
   }
 
   @override
-  Future<void> addNewUser(User user) async{
+  Future<void> addNewUser(User user, UserHistorial historial) async{
     final isar = await db;
     await isar.writeTxn(() async{
       await isar.users.put(user);
@@ -41,6 +41,12 @@ class UserDatasourceImpl implements UserDatasource{
   @override
   Future<void> updateUser(User user) {
     // TODO: implement updateUser
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> addNewHistorial(int userId, UserHistorial historial) {
+    // TODO: implement addNewHistorial
     throw UnimplementedError();
   }
 

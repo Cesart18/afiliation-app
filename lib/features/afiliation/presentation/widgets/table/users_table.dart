@@ -11,13 +11,13 @@ class UsersTable extends StatelessWidget {
       checkboxHorizontalMargin: 10,
       border: TableBorder.all(),
       sortColumnIndex: 1,
-      dataTextStyle: TextStyle(),
+      dataTextStyle: const TextStyle(),
       horizontalMargin: 10,
       headingRowHeight: 100,
       sortAscending: true,
       columnSpacing: 10,
       showBottomBorder: true,
-      columns: [
+      columns: const [
         DataColumn(label: Text('Nombre')),
         DataColumn(label: Text('Apellido')),
         DataColumn(label: Text('Monto facturado')),
@@ -28,7 +28,7 @@ class UsersTable extends StatelessWidget {
             
           },
           selected: true,
-          cells: [
+          cells: const [
           DataCell(Text('cesar')),
           DataCell(Text('tovar')),
           DataCell(Text('100.00')),

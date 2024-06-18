@@ -7,6 +7,7 @@ class NewAfiliationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Container(
 
       width: double.infinity,
@@ -17,7 +18,9 @@ class NewAfiliationWidget extends StatelessWidget {
         maxHeight: 70
       ),
       decoration: BoxDecoration(
-        border: Border.all(),
+        border: Border.all(
+          color: colors.onSurface
+        ),
         borderRadius: BorderRadius.circular(8)
       ),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

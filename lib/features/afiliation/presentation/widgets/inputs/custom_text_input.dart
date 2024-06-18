@@ -38,12 +38,12 @@ class _CustomTextInputState extends State<CustomTextInput> {
     final colors = Theme.of(context).colorScheme;
     final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w300,
-            color: isHovered ? colors.primary : colors.onBackground
+            color: isHovered ? colors.primary : colors.surface
           );
     OutlineInputBorder border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
       borderSide: BorderSide(
-        color: isHovered ? colors.primary : colors.onBackground,
+        color: isHovered ? colors.primary : colors.onSurface,
         width: 1.5
       )
     );
@@ -79,7 +79,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
           textAlign: widget.textAlign,
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onFieldSubmitted,
-          cursorColor: colors.onBackground,
+          cursorColor: colors.onSurface,
           cursorWidth: 1.5,
           keyboardType: widget.keyboardType,
           inputFormatters: widget.inputFormatters,

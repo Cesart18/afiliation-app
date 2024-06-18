@@ -5,7 +5,7 @@ class CustomTextInput extends StatefulWidget {
 
   final int flex;
   final String hintText;
-  final String labelText;
+  final String? labelText;
   final String? errorMessage;
   final Widget? suffixIcon;
   final TextAlign textAlign;
@@ -17,7 +17,7 @@ class CustomTextInput extends StatefulWidget {
   const CustomTextInput({
       super.key,
       required this.hintText,
-      required this.labelText,
+      this.labelText,
       this.flex = 1,
       this.errorMessage,
       this.suffixIcon,

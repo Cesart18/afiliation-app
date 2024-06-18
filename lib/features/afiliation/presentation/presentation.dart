@@ -15,3 +15,7 @@ export 'widgets/new_afiliation/new_afiliation_widget.dart';
 export 'widgets/inputs/custom_text_input.dart';
 // buttons
 export 'widgets/buttons/primary_button.dart';
+// search_delegate
+export 'widgets/search_delegate/search_delegate_input.dart';
+// user_table
+export 'widgets/table/users_table.dart';

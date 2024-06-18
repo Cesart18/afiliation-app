@@ -32,10 +32,18 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           children: [
         
-            SizedBox(height: 50,),
-        
+            SizedBox(height: 50,),       
             /// new afiliation
-            NewAfiliationWidget()
+            NewAfiliationWidget(),
+
+            SizedBox(height: 50,),
+            /// search input       
+            SearchDelegateInput(),
+
+            SizedBox(height: 50,),
+            /// table user
+            // UsersTable()
+
         
           ],
         ),

@@ -17,23 +17,18 @@ const UserSchema = CollectionSchema(
   name: r'User',
   id: -7838171048429979076,
   properties: {
-    r'discount': PropertySchema(
-      id: 0,
-      name: r'discount',
-      type: IsarType.long,
-    ),
     r'firstName': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'firstName',
       type: IsarType.string,
     ),
     r'isDoctor': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'isDoctor',
       type: IsarType.bool,
     ),
     r'lastName': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'lastName',
       type: IsarType.string,
     )
@@ -76,10 +71,9 @@ void _userSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.discount);
-  writer.writeString(offsets[1], object.firstName);
-  writer.writeBool(offsets[2], object.isDoctor);
-  writer.writeString(offsets[3], object.lastName);
+  writer.writeString(offsets[0], object.firstName);
+  writer.writeBool(offsets[1], object.isDoctor);
+  writer.writeString(offsets[2], object.lastName);
 }
 
 User _userDeserialize(
@@ -89,10 +83,9 @@ User _userDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = User(
-    discount: reader.readLong(offsets[0]),
-    firstName: reader.readString(offsets[1]),
-    isDoctor: reader.readBool(offsets[2]),
-    lastName: reader.readString(offsets[3]),
+    firstName: reader.readString(offsets[0]),
+    isDoctor: reader.readBool(offsets[1]),
+    lastName: reader.readString(offsets[2]),
   );
   object.id = id;
   return object;
@@ -106,12 +99,10 @@ P _userDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLong(offset)) as P;
-    case 1:
       return (reader.readString(offset)) as P;
-    case 2:
+    case 1:
       return (reader.readBool(offset)) as P;
-    case 3:
+    case 2:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -208,58 +199,6 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
 }
 
 extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
-  QueryBuilder<User, User, QAfterFilterCondition> discountEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'discount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> discountGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'discount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> discountLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'discount',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterFilterCondition> discountBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'discount',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<User, User, QAfterFilterCondition> firstNameEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -658,18 +597,6 @@ extension UserQueryLinks on QueryBuilder<User, User, QFilterCondition> {
 }
 
 extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
-  QueryBuilder<User, User, QAfterSortBy> sortByDiscount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'discount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> sortByDiscountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'discount', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> sortByFirstName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'firstName', Sort.asc);
@@ -708,18 +635,6 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
 }
 
 extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
-  QueryBuilder<User, User, QAfterSortBy> thenByDiscount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'discount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<User, User, QAfterSortBy> thenByDiscountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'discount', Sort.desc);
-    });
-  }
-
   QueryBuilder<User, User, QAfterSortBy> thenByFirstName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'firstName', Sort.asc);
@@ -770,12 +685,6 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
 }
 
 extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
-  QueryBuilder<User, User, QDistinct> distinctByDiscount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'discount');
-    });
-  }
-
   QueryBuilder<User, User, QDistinct> distinctByFirstName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -801,12 +710,6 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<User, int, QQueryOperations> discountProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'discount');
     });
   }
 

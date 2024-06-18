@@ -1,13 +1,26 @@
+
 import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
+import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
 final userFormInputProvider = StateNotifierProvider.autoDispose<UserFormInputNotifier,UserFormInputState>((ref) {
-  return UserFormInputNotifier();
+  final userNotifier = ref.watch(usersProvider.notifier);
+  return UserFormInputNotifier(
+    userNotifier: userNotifier
+  );
 });
 
+
 class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
-  UserFormInputNotifier(): super(UserFormInputState());
+  final UsersNotifier userNotifier;
+  UserFormInputNotifier({
+    required this.userNotifier
+  }): super(UserFormInputState()){
+    initControllers();
+  }
 
   void onFirstNameChanged( String value ){
     final newFirstName = FirstName.dirty(value);
@@ -34,10 +47,20 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(
       isDoctor: value
     );
-  // TODO: hacer la consideracion del valor inicial a traves del widget
   }
 
-  // TODO: OnformSubmit
+  void onFormsumbit() async {
+    _touchedEveryField();
+    if ( !state.isValid ) return;
+
+    state = state.copyWith(isPosting: true);
+
+    await userNotifier.createNewUser(firstName: state.firstName.value, lastName: state.lastName.value, amount: state.amount.value, isDoctor: state.isDoctor);
+    
+    state = state.copyWith(isPosting: false);
+    clearAll();
+
+  }
 
   _touchedEveryField(){
     final firstName = FirstName.dirty(state.firstName.value);
@@ -51,6 +74,33 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
       isFormPosted: true,
       isValid: Formz.validate([ firstName, lastName, amount ])
     );
+  }
+
+  void clearAll(){
+    state = state.copyWith(
+      firstName: const FirstName.pure(),
+      lastName: const LastName.pure(),
+      amount: const Amount.pure(),
+      isDoctor: false,
+      isValid: false,
+      isFormPosted: false,
+      isPosting: false
+    );
+    disposeControllers();
+  }
+
+  initControllers(){
+      state = state.copyWith(
+        firstNameController: TextEditingController(),
+        lastNameController: TextEditingController(),
+        amountController: TextEditingController()
+      );
+  }
+
+  disposeControllers(){
+    state.firstNameController?.clear();
+    state.lastNameController?.clear();
+    state.amountController?.clear();
   }
 
 }
@@ -67,6 +117,9 @@ class UserFormInputState {
   final bool isValid;
   final bool isFormPosted;
   final bool isPosting;
+  final TextEditingController? firstNameController;
+  final TextEditingController? lastNameController;
+  final TextEditingController? amountController;
 
   UserFormInputState({
       this.firstName = const FirstName.pure(),
@@ -75,7 +128,10 @@ class UserFormInputState {
       this.isDoctor = false,
       this.isValid = false,
       this.isFormPosted = false,
-      this.isPosting = false
+      this.isPosting = false,
+      this.firstNameController,
+      this.lastNameController,
+      this.amountController,
       });
 
   UserFormInputState copyWith({
@@ -86,6 +142,9 @@ class UserFormInputState {
     bool? isValid,
     bool? isFormPosted,
     bool? isPosting,
+    TextEditingController? lastNameController,
+    TextEditingController? firstNameController,
+    TextEditingController? amountController,
   }) =>
       UserFormInputState(
         firstName: firstName ?? this.firstName,
@@ -95,5 +154,8 @@ class UserFormInputState {
         isValid: isValid ?? this.isValid,
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isPosting: isPosting ?? this.isPosting,
+        lastNameController: lastNameController ?? this.lastNameController,
+        firstNameController: firstNameController ?? this.firstNameController,
+        amountController: amountController ?? this.amountController,
       );
 }

@@ -8,6 +8,10 @@ export 'screens/home/home_screen.dart';
 export 'providers/theme/app_theme_provider.dart';
 // users
 export 'providers/users/user_form_input_provider.dart';
+export 'providers/users/user_repository_provider.dart';
+export 'providers/users/users_providers.dart';
+// search delegate
+export 'providers/search_delegate/search_delegate_provider.dart';
 
 
 //* widgets

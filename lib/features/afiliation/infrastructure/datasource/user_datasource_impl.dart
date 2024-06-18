@@ -14,40 +14,76 @@ class UserDatasourceImpl implements UserDatasource{
 
   @override
   Future<void> addNewUser(User user, UserHistorial historial) async{
+
+    final newUser = user
+    ..historial.add(historial);
+
     final isar = await db;
     await isar.writeTxn(() async{
-      await isar.users.put(user);
+      await isar.users.put(newUser);
+      await isar.userHistorials.put(historial);
+      await user.historial.save();
     });
   }
 
   @override
-  Future<void> deleteUser(int userId) {
-    // TODO: implement deleteUser
-    throw UnimplementedError();
+  Future<void> deleteUser(int userId) async {
+    final isar = await db;
+
+    await isar.writeTxn(() async{
+      isar.users.filter().idEqualTo(userId).deleteFirst();
+    });
   }
 
   @override
-  Future<User> getUser(int userId) {
-    // TODO: implement getUser
-    throw UnimplementedError();
+  Future<User> getUser(int userId) async {
+    final isar = await db;
+    
+    final user = await isar.users.where().idEqualTo(userId).findFirst();
+      return Future.value(user);
+
   }
 
   @override
-  Stream<List<User>> getUsers([String query = '']) {
-    // TODO: implement getUsers
-    throw UnimplementedError();
+  Stream<List<User>> getUsers([String query = '']) async* {
+  try {
+    final isar = await db;
+    final usersQ = query.isEmpty 
+        ? isar.users.where().watch(fireImmediately: true) 
+        : isar.users.filter().firstNameStartsWith(query).or().lastNameStartsWith(query).watch(fireImmediately: true);
+
+      yield* usersQ;
+  } catch (e) {
+    // print('Error fetching users: $e');
+    yield [];
   }
+}
+
 
   @override
-  Future<void> updateUser(User user) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<void> updateUser(User updatedUser) async {
+    final isar = await db;
+      await isar.writeTxn(() async{
+      User? user = await isar.users.get(updatedUser.id!);
+      user = updatedUser;
+      await isar.users.put(user);
+    });
+    
   }
   
   @override
-  Future<void> addNewHistorial(int userId, UserHistorial historial) {
-    // TODO: implement addNewHistorial
-    throw UnimplementedError();
+  Future<void> addNewHistorial(int userId, UserHistorial historial) async{
+    final isar = await db;
+    
+    final user = await isar.users.filter().idEqualTo(userId).findFirst()
+    ?..historial.add(historial);
+
+    await isar.writeTxn(() async{
+      await isar.users.put(user!);
+    });
+    
+// TODO: manejar los errores
+    
   }
 
 }

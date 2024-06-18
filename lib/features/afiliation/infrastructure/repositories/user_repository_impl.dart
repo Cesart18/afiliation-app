@@ -27,7 +27,7 @@ class UserRepositoryImpl implements UserRepository{
 
   @override
   Stream<List<User>> getUsers([String query = '']) async*{
-    yield* datasource.getUsers();
+    yield* datasource.getUsers(query);
   }
 
   @override

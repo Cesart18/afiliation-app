@@ -12,6 +12,7 @@ class CustomTextInput extends StatefulWidget {
   final Function(String)? onFieldSubmitted;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
+  final TextEditingController? controller;
 
   const CustomTextInput({
       super.key,
@@ -23,7 +24,8 @@ class CustomTextInput extends StatefulWidget {
       this.onChanged,
       this.onFieldSubmitted,
       this.inputFormatters,
-      this.keyboardType
+      this.keyboardType,
+      this.controller
      });
 
   @override
@@ -79,6 +81,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
         cursorWidth: 1.5,
         keyboardType: widget.keyboardType,
         inputFormatters: widget.inputFormatters,
+        controller: widget.controller,
           
       ),
     );

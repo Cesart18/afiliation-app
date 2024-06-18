@@ -9,7 +9,7 @@ class PrimaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: double.infinity,
+      height: 50,
       child: IntrinsicWidth(
         child: FilledButton(
           style: FilledButton.styleFrom(

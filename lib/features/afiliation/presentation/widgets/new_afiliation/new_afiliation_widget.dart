@@ -10,6 +10,9 @@ class NewAfiliationWidget extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     final userForm = ref.watch(userFormInputProvider);
+    final firstNamecontroller = userForm.firstNameController;
+    final lastNameController = userForm.lastNameController;
+    final amountController = userForm.amountController;
     return Container(
 
       width: double.infinity,
@@ -17,7 +20,7 @@ class NewAfiliationWidget extends ConsumerWidget {
 
       constraints: const BoxConstraints(
         maxWidth: 840,
-        maxHeight: 70,
+        maxHeight: 120,
         minWidth: 500
       ),
       decoration: BoxDecoration(
@@ -26,7 +29,7 @@ class NewAfiliationWidget extends ConsumerWidget {
         ),
         borderRadius: BorderRadius.circular(8)
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
 
       child:  Row(
         children: [
@@ -35,6 +38,7 @@ class NewAfiliationWidget extends ConsumerWidget {
            Expanded(
             flex: 3,
             child: CustomTextInput(
+              controller: firstNamecontroller,
               labelText: 'Nombre',
               hintText: 'Luis',
               errorMessage: userForm.isFormPosted ? userForm.firstName.errorMessage : null,
@@ -47,6 +51,7 @@ class NewAfiliationWidget extends ConsumerWidget {
            Expanded(
             flex: 3,
             child: CustomTextInput(
+              controller: lastNameController,
               labelText: 'Apellido',
               hintText: 'Moreno',
               errorMessage: userForm.isFormPosted ? userForm.lastName.errorMessage : null,
@@ -59,6 +64,7 @@ class NewAfiliationWidget extends ConsumerWidget {
           Expanded(
             flex: 2,
             child: CustomTextInput(
+              controller: amountController,
               labelText: 'Monto facturado',
               hintText: '10.00',
               errorMessage: userForm.isFormPosted ? userForm.amount.errorMessage : null,
@@ -82,7 +88,9 @@ class NewAfiliationWidget extends ConsumerWidget {
           /// boton de continuar
             PrimaryButton(
             text: 'Aceptar',
-            onPressed: (){},
+            onPressed: (){
+              ref.read(userFormInputProvider.notifier).onFormsumbit();
+            },
           ),
         ],
       ),

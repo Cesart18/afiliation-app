@@ -14,11 +14,9 @@ class User {
   final historial = IsarLinks<UserHistorial>();
 
   final bool isDoctor;
-  final int discount;
 
   User(
       {required this.firstName,
       required this.lastName,
-      required this.isDoctor,
-      required this.discount});
+      required this.isDoctor});
 }

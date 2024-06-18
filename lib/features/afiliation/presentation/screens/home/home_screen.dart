@@ -7,7 +7,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-
+    
     final isDarkmode = ref.watch(appThemeProvider);
     final colors = Theme.of(context).colorScheme;
     return Scaffold(
@@ -25,7 +25,7 @@ class HomeScreen extends ConsumerWidget {
             ref.read(appThemeProvider.notifier).update((state) => !state);
           }, icon: Icon( isDarkmode ? Icons.light_mode_sharp : Icons.brightness_2  ,
           color: colors.onSurface,)),
-          const SizedBox(width: 20,)
+          const SizedBox(width: 20,),
         ],
       ),
       body:  const Center(

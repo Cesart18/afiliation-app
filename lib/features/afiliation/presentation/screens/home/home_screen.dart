@@ -31,7 +31,6 @@ class HomeScreen extends ConsumerWidget {
       body:  const Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          // TODO: tomar consideraciones con el padding aqui
           child: Column(
             children: [
           

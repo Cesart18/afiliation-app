@@ -8,14 +8,16 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return SizedBox(
       height: 50,
       child: IntrinsicWidth(
         child: FilledButton(
           style: FilledButton.styleFrom(
-            backgroundColor: color,
+            backgroundColor: color ?? colors.primary,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8)
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: colors.onSurface, width: 2)
             )
           ),
           onPressed: onPressed, child: Text(text)),

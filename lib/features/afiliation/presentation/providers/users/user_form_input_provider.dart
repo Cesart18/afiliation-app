@@ -1,4 +1,3 @@
-
 import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,106 +5,107 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
-final userFormInputProvider = StateNotifierProvider.autoDispose<UserFormInputNotifier,UserFormInputState>((ref) {
+final userFormInputProvider = StateNotifierProvider.autoDispose<
+    UserFormInputNotifier, UserFormInputState>((ref) {
   final userNotifier = ref.watch(usersProvider.notifier);
-  return UserFormInputNotifier(
-    userNotifier: userNotifier
-  );
+  return UserFormInputNotifier(userNotifier: userNotifier);
 });
-
 
 class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
   final UsersNotifier userNotifier;
-  UserFormInputNotifier({
-    required this.userNotifier
-  }): super(UserFormInputState()){
+  UserFormInputNotifier({required this.userNotifier})
+      : super(UserFormInputState()) {
     initControllers();
   }
 
-  void onFirstNameChanged( String value ){
+  void onFirstNameChanged(String value) {
     final newFirstName = FirstName.dirty(value);
     state = state.copyWith(
-      firstName: newFirstName,
-      isValid: Formz.validate([ newFirstName, state.lastName, state.amount ])
-    );
+        firstName: newFirstName,
+        isValid: Formz.validate([newFirstName, state.lastName, state.amount]));
   }
-  void onLastNameChanged( String value ){
+
+  void onLastNameChanged(String value) {
     final newLastName = LastName.dirty(value);
     state = state.copyWith(
-      lastName: newLastName,
-      isValid: Formz.validate([ newLastName, state.firstName, state.amount ])
-    );
+        lastName: newLastName,
+        isValid: Formz.validate([newLastName, state.firstName, state.amount]));
   }
-  void onAmountChanged( String value ){
+
+  void onAmountChanged(String value) {
     final newAmount = Amount.dirty(double.parse(value));
     state = state.copyWith(
-      amount: newAmount,
-      isValid: Formz.validate([ newAmount, state.firstName, state.lastName ])
-    );
+        amount: newAmount,
+        isValid: Formz.validate([newAmount, state.firstName, state.lastName]));
   }
-  void onTypeUserChanged( bool? value ){
-    state = state.copyWith(
-      isDoctor: value
-    );
+
+  void onTypeUserChanged(bool? value) {
+    state = state.copyWith(isDoctor: value);
   }
 
   void onFormsumbit() async {
     _touchedEveryField();
-    if ( !state.isValid ) return;
+    if (!state.isValid) return;
 
     state = state.copyWith(isPosting: true);
 
-    await userNotifier.createNewUser(firstName: state.firstName.value, lastName: state.lastName.value, amount: state.amount.value, isDoctor: state.isDoctor);
-    
-    state = state.copyWith(isPosting: false);
-    clearAll();
+    await userNotifier.createNewUser(
+        firstName: state.firstName.value,
+        lastName: state.lastName.value,
+        amount: state.amount.value,
+        isDoctor: state.isDoctor);
 
+    state = state.copyWith(isPosting: false);
+    disposeAll();
   }
 
-  _touchedEveryField(){
+  _touchedEveryField() {
     final firstName = FirstName.dirty(state.firstName.value);
     final lastName = LastName.dirty(state.lastName.value);
     final amount = Amount.dirty(state.amount.value);
 
     state = state.copyWith(
-      firstName: firstName,
-      lastName: lastName,
-      amount: amount,
-      isFormPosted: true,
-      isValid: Formz.validate([ firstName, lastName, amount ])
-    );
+        firstName: firstName,
+        lastName: lastName,
+        amount: amount,
+        isFormPosted: true,
+        isValid: Formz.validate([firstName, lastName, amount]));
   }
 
-  void clearAll(){
+  void disposeAll() {
     state = state.copyWith(
-      firstName: const FirstName.pure(),
-      lastName: const LastName.pure(),
-      amount: const Amount.pure(),
-      isDoctor: false,
-      isValid: false,
-      isFormPosted: false,
-      isPosting: false
-    );
-    disposeControllers();
+        isDoctor: false, isValid: false, isFormPosted: false, isPosting: false);
+    clearControllers();
   }
 
-  initControllers(){
-      state = state.copyWith(
+  initControllers() {
+    state = state.copyWith(
         firstNameController: TextEditingController(),
         lastNameController: TextEditingController(),
-        amountController: TextEditingController()
-      );
+        amountController: TextEditingController());
   }
 
-  disposeControllers(){
+  clearControllers() {
+    clearFistName();
+    clearLastName();
+    clearAmount();
+  }
+
+  clearFistName() {
+    state = state.copyWith(firstName: const FirstName.pure());
     state.firstNameController?.clear();
+  }
+
+  clearLastName() {
+    state = state.copyWith(lastName: const LastName.pure());
     state.lastNameController?.clear();
+  }
+
+  clearAmount() {
+    state = state.copyWith(amount: const Amount.pure());
     state.amountController?.clear();
   }
-
 }
-
-
 
 // ! la logica que puedo implementar para usuario existente es que al abrirlo los value de los inputs sean sus valores
 
@@ -122,17 +122,17 @@ class UserFormInputState {
   final TextEditingController? amountController;
 
   UserFormInputState({
-      this.firstName = const FirstName.pure(),
-      this.lastName = const LastName.pure(),
-      this.amount = const Amount.pure(),
-      this.isDoctor = false,
-      this.isValid = false,
-      this.isFormPosted = false,
-      this.isPosting = false,
-      this.firstNameController,
-      this.lastNameController,
-      this.amountController,
-      });
+    this.firstName = const FirstName.pure(),
+    this.lastName = const LastName.pure(),
+    this.amount = const Amount.pure(),
+    this.isDoctor = false,
+    this.isValid = false,
+    this.isFormPosted = false,
+    this.isPosting = false,
+    this.firstNameController,
+    this.lastNameController,
+    this.amountController,
+  });
 
   UserFormInputState copyWith({
     FirstName? firstName,

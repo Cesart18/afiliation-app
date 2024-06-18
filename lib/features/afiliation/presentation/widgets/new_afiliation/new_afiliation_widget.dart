@@ -43,9 +43,12 @@ class NewAfiliationWidget extends ConsumerWidget {
               hintText: 'Luis',
               errorMessage: userForm.isFormPosted ? userForm.firstName.errorMessage : null,
               onChanged: ref.read(userFormInputProvider.notifier).onFirstNameChanged,
+              suffixIcon: userForm.firstNameController!.value.text.isNotEmpty ? IconButton(onPressed: (){
+                ref.read(userFormInputProvider.notifier).clearFistName();
+              }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
             ),
           ),
-          const SizedBox(width: 10,),
+          const SizedBox(width: 14,),
 
           /// Apellido
            Expanded(
@@ -56,9 +59,12 @@ class NewAfiliationWidget extends ConsumerWidget {
               hintText: 'Moreno',
               errorMessage: userForm.isFormPosted ? userForm.lastName.errorMessage : null,
               onChanged: ref.read(userFormInputProvider.notifier).onLastNameChanged,
+              suffixIcon: userForm.lastNameController!.value.text.isNotEmpty ? IconButton(onPressed: (){
+                ref.read(userFormInputProvider.notifier).clearLastName();
+              }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null 
             ),
           ),
-          const SizedBox(width: 10,),
+          const SizedBox(width: 14,),
 
           /// Monto facturado
           Expanded(
@@ -69,13 +75,16 @@ class NewAfiliationWidget extends ConsumerWidget {
               hintText: '10.00',
               errorMessage: userForm.isFormPosted ? userForm.amount.errorMessage : null,
               onChanged: ref.read(userFormInputProvider.notifier).onAmountChanged,
+              suffixIcon: userForm.amountController!.value.text.isNotEmpty ? IconButton(onPressed: (){
+                ref.read(userFormInputProvider.notifier).clearAmount();
+              }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
               textAlign: TextAlign.end,
               inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
               ],
             ),
           ),
-          const SizedBox(width: 10,),
+          const SizedBox(width: 14,),
 
           /// Tipo de usuario
            FittedBox(child: CustomDrowdownButton(
@@ -84,7 +93,6 @@ class NewAfiliationWidget extends ConsumerWidget {
 
 
           const SizedBox(width: 20,),
-          // TODO: ver la posibilidad de un boton de clear all
           /// boton de continuar
             PrimaryButton(
             text: 'Aceptar',

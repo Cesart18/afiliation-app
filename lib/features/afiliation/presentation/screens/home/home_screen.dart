@@ -28,24 +28,29 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(width: 20,)
         ],
       ),
-      body: const Center(
-        child: Column(
-          children: [
-        
-            SizedBox(height: 50,),       
-            /// new afiliation
-            NewAfiliationWidget(),
-
-            SizedBox(height: 50,),
-            /// search input       
-            SearchDelegateInput(),
-
-            SizedBox(height: 50,),
-            /// table user
-            // UsersTable()
-
-        
-          ],
+      body:  const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          // TODO: tomar consideraciones con el padding aqui
+          child: Column(
+            children: [
+          
+              SizedBox(height: 50,),       
+              /// new afiliation
+              NewAfiliationWidget(),
+          
+              SizedBox(height: 50,),
+              /// search input       
+              SearchDelegateInput(),
+          
+              SizedBox(height: 50,),
+              /// table user
+              UsersTable(),
+          
+              SizedBox(height: 50,),
+          
+            ],
+          ),
         ),
       ),
     );

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class PrimaryButton extends StatelessWidget {
   final String text;
   final Color? color;
-  const PrimaryButton({super.key, required this.text, this.color});
+  final Function()? onPressed;
+  const PrimaryButton({super.key, required this.text, this.color, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class PrimaryButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(8)
             )
           ),
-          onPressed: (){}, child: Text(text)),
+          onPressed: onPressed, child: Text(text)),
       ));
   }
 }

@@ -6,11 +6,10 @@ class SearchDelegateInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(
-        maxWidth: 300
-      ),
-      child: const CustomTextInput(
+    return const SizedBox(
+      width: 300,
+      height: 50,
+      child:  CustomTextInput(
         hintText: 'Buscar',
         suffixIcon: Icon(Icons.search),
       ),

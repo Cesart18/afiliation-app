@@ -13,7 +13,7 @@ class Amount extends FormzInput<double, AmountError>{
   String? get errorMessage{
     if( isValid || isPure ) return null;
 
-    if ( displayError == AmountError.format ) return 'El monto no puede ser menor a 0';
+    if ( displayError == AmountError.format ) return 'Monto es requerido';
 
     return null;
   }
@@ -21,7 +21,7 @@ class Amount extends FormzInput<double, AmountError>{
 
   @override
   AmountError? validator(double value) {
-    if ( value < 0 ) return AmountError.format;
+    if ( value <= 0 ) return AmountError.format;
     return null;
   }
 

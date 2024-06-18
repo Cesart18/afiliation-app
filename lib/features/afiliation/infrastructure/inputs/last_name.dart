@@ -12,7 +12,7 @@ class LastName extends FormzInput<String, LastNameError>{
   String? get errorMessage{
     if ( isValid || isPure ) return null;
 
-    if ( displayError == LastNameError.isEmpty ) return 'El campo apellido no puede estar vacio';
+    if ( displayError == LastNameError.isEmpty ) return 'Apellido es requerido';
 
     return null;
   }

@@ -12,7 +12,7 @@ class FirstName extends FormzInput<String, FirstNameError>{
   String? get errorMessage{
     if ( isValid || isPure ) return null;
 
-    if ( displayError == FirstNameError.isEmpty ) return 'El campo nombre no puede estar vacio';
+    if ( displayError == FirstNameError.isEmpty ) return 'Nombre es requerido';
 
     return null;
   }

@@ -31,6 +31,57 @@ class _TableBody extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
+    final sortState = ref.watch(sortUserProvider);
+
+    List<User> sortedUsers = List.from(users);
+
+    switch (sortState.columnIndex) {
+      /// nombre
+      case 1:
+        sortedUsers.sort((a, b) => sortState.ascending
+            ? a.firstName.compareTo(b.firstName)
+            : b.firstName.compareTo(a.firstName));
+        break;
+
+      /// apellido
+      case 2:
+        sortedUsers.sort((a, b) => sortState.ascending
+            ? a.lastName.compareTo(b.lastName)
+            : b.lastName.compareTo(a.lastName));
+        break;
+
+      /// cedula
+      case 3:
+        sortedUsers.sort((a, b) {
+          int nationalIdA = int.tryParse(a.nationalId) ?? 0;
+          int nationalIdB = int.tryParse(b.nationalId) ?? 0;
+          return sortState.ascending
+              ? nationalIdA.compareTo(nationalIdB)
+              : nationalIdB.compareTo(nationalIdA);
+        });
+        break;
+
+      /// tipo de usuario
+      case 4:
+        sortedUsers.sort((a, b) => sortState.ascending
+            ? a.isDoctor.toString().compareTo(b.isDoctor.toString())
+            : b.isDoctor.toString().compareTo(a.isDoctor.toString()));
+        break;
+
+      /// monto facturado
+      case 5:
+        sortedUsers.sort((a, b) => sortState.ascending
+            ? a.historial
+                .fold(0, (sum, item) => sum + item.amount.round())
+                .compareTo(
+                    b.historial.fold(0, (sum, item) => sum + item.amount))
+            : b.historial
+                .fold(0, (sum, item) => sum + item.amount.round())
+                .compareTo(
+                    a.historial.fold(0, (sum, item) => sum + item.amount)));
+        break;
+    }
+
     return Expanded(
       child: SingleChildScrollView(
         child: SingleChildScrollView(
@@ -38,78 +89,71 @@ class _TableBody extends ConsumerWidget {
 
           /// table of users
           child: DataTable(
+              sortColumnIndex: sortState.columnIndex,
+              sortAscending: sortState.ascending,
               columnSpacing: size.width * 0.03,
               border: TableBorder.symmetric(
                 outside: BorderSide(
                   color: colors.onSurface,
                 ),
-                inside: BorderSide(
-                  color: colors.onSurface
-                ),
+                inside: BorderSide(color: colors.onSurface),
                 borderRadius: BorderRadius.circular(8),
               ),
 
               /// column of table
-              columns:  [
+              columns: [
                 const DataColumn(label: Text('')),
                 DataColumn(
-                  tooltip: 'Ordernar por nombre',
-                  onSort: (columnIndex, ascending) {
-                    // TODO: implementar el sort
-                  },
+                    tooltip: 'Ordernar por nombre',
+                    onSort: (columnIndex, ascending) {
+                      ref.read(sortUserProvider.notifier).sort(columnIndex);
+                    },
                     label: const Text(
-                  'Nombre',
-                  overflow: TextOverflow.ellipsis,
-                )),
+                      'Nombre ',
+                      overflow: TextOverflow.ellipsis,
+                    )),
                 DataColumn(
-                  tooltip: 'Ordernar por apellido',
-                  onSort: (columnIndex, ascending) {
-                    
-                  },
+                    tooltip: 'Ordernar por apellido',
+                    onSort: (columnIndex, ascending) {
+                      ref.read(sortUserProvider.notifier).sort(columnIndex);
+                    },
                     label: const Text(
-                  'Apellido',
-                  overflow: TextOverflow.ellipsis,
-                )),
+                      'Apellido ',
+                      overflow: TextOverflow.ellipsis,
+                    )),
                 DataColumn(
-                  tooltip: 'Ordenar por cédula',
-                  onSort: (columnIndex, ascending) {
-                    
-                  },
+                    tooltip: 'Ordenar por cédula',
+                    onSort: (columnIndex, ascending) {
+                      ref.read(sortUserProvider.notifier).sort(columnIndex);
+                    },
                     label: const Text(
-                  'Cédula',
-                  overflow: TextOverflow.ellipsis,
-                )),
+                      'Cédula ',
+                      overflow: TextOverflow.ellipsis,
+                    )),
                 DataColumn(
-                  tooltip: 'Ordernar por tipo de usuario',
-                  onSort: (columnIndex, ascending) {
-                    
-                  },
+                    tooltip: 'Ordernar por tipo de usuario',
+                    onSort: (columnIndex, ascending) {
+                      ref.read(sortUserProvider.notifier).sort(columnIndex);
+                    },
                     label: const Text(
-                  'Tipo de usuario',
-                  overflow: TextOverflow.ellipsis,
-                )),
+                      'Tipo de usuario ',
+                      overflow: TextOverflow.ellipsis,
+                    )),
                 DataColumn(
-                  tooltip: 'Ordernar por monto facturado',
-                  onSort: (columnIndex, ascending) {
-                    
-                  },
+                    tooltip: 'Ordernar por monto facturado',
+                    onSort: (columnIndex, ascending) {
+                      ref.read(sortUserProvider.notifier).sort(columnIndex);
+                    },
                     label: const Text(
-                  'Monto facturado',
-                  overflow: TextOverflow.ellipsis,
-                )),
-                 DataColumn(
-                  tooltip: 'Ordernar por descuento',
-                  onSort: (columnIndex, ascending) {
-                    
-                  },
-                    label: const Text(
-                  'Descuento',
-                  overflow: TextOverflow.ellipsis,
-                )),
-                 const DataColumn(label: Text('')),
+                      'Monto facturado ',
+                      overflow: TextOverflow.ellipsis,
+                    )),
+                const DataColumn(
+                    label: Text('Descuento', overflow: TextOverflow.ellipsis)),
+                const DataColumn(label: Text('')),
               ],
               rows: [
-                ...users.map((user) => _customDataRow(user, context, ref))
+                ...sortedUsers.map((user) => _customDataRow(user, context, ref))
               ]),
         ),
       ),
@@ -117,44 +161,59 @@ class _TableBody extends ConsumerWidget {
   }
 
   DataRow _customDataRow(User user, BuildContext context, WidgetRef ref) {
-    return DataRow(
-      cells: [
+    return DataRow(cells: [
       DataCell(
         Tooltip(
-            message: 'Registro del usuario',
-             child: IconButton(onPressed: (){
+          message: 'Registro del usuario',
+          child: IconButton(
+              onPressed: () {
                 context.push('/user/${user.id}');
-             }, icon: const Icon(Icons.file_open_rounded,)),
-           ),
+              },
+              icon: const Icon(
+                Icons.file_open_rounded,
+              )),
+        ),
       ),
       DataCell(Text(Formatters.firstLetterToUpper(user.firstName))),
       DataCell(Text(Formatters.firstLetterToUpper(user.lastName))),
       DataCell(Text(Formatters.formatNationalId(user.nationalId))),
       DataCell((Text(user.isDoctor ? 'Medico' : 'Usuario'))),
-      DataCell(Text('${ Formatters.totalAmount(user.historial.toList()) }')),
+      DataCell(Text('${Formatters.totalAmount(user.historial.toList())}')),
       const DataCell(Text('5%')),
-       DataCell(Row(
-         children: [
-          
-            Tooltip(
+      DataCell(Row(
+        children: [
+          Tooltip(
             message: 'Agregar nuevo registro',
-             child: IconButton(onPressed: (){
-                Functions.showModal(context, NewHistorialDialog(user: user));
-             }, icon: const Icon(Icons.note_add, color: Colors.green,)),
-           ),
-           Tooltip(
+            child: IconButton(
+                onPressed: () {
+                  Functions.showModal(context, NewHistorialDialog(user: user));
+                },
+                icon: const Icon(
+                  Icons.note_add,
+                  color: Colors.green,
+                )),
+          ),
+          Tooltip(
             message: 'Eliminar usuario',
-             child: IconButton(onPressed: (){
-              Functions.showModal(context, DeleteDialog(
-                firstName: 'a ${Formatters.firstLetterToUpper(user.firstName)}',
-                callback: () => ref.read(usersProvider.notifier).deleteUser(user.id ?? 0),));
-             }, icon: const Icon(Icons.delete, color: Colors.red,)),
-           ),
-         ],
-       )),
+            child: IconButton(
+                onPressed: () {
+                  Functions.showModal(
+                      context,
+                      DeleteDialog(
+                        firstName:
+                            'a ${Formatters.firstLetterToUpper(user.firstName)}',
+                        callback: () => ref
+                            .read(usersProvider.notifier)
+                            .deleteUser(user.id ?? 0),
+                      ));
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )),
+          ),
+        ],
+      )),
     ]);
   }
 }
-
-
-

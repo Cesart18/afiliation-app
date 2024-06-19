@@ -14,6 +14,23 @@ class UserTable extends ConsumerWidget {
     
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
+
+    final sortState = ref.watch(sortHistorialProvider);
+
+    List<UserHistorial> sortedHistorial = List.from(historial ?? []);
+    if (sortState.columnIndex == 0) {
+      // Ordenar por fecha
+      sortedHistorial.sort((a, b) => sortState.ascending
+          ? a.date.compareTo(b.date)
+          : b.date.compareTo(a.date));
+    } else if (sortState.columnIndex == 1) {
+      // Ordenar por monto
+      sortedHistorial.sort((a, b) => sortState.ascending
+          ? a.amount.compareTo(b.amount)
+          : b.amount.compareTo(a.amount));
+    }
+
+
     return Expanded(
       child: SingleChildScrollView(
         child: SingleChildScrollView(
@@ -21,6 +38,8 @@ class UserTable extends ConsumerWidget {
     
           /// table of users
           child: DataTable(
+            sortColumnIndex: sortState.columnIndex,
+            sortAscending: sortState.ascending,
               columnSpacing: size.width * 0.1,
               border: TableBorder.symmetric(
                 outside: BorderSide(
@@ -36,8 +55,8 @@ class UserTable extends ConsumerWidget {
               columns:  [
                 DataColumn(
                   tooltip: 'Ordernar por fecha',
-                  onSort: (columnIndex, ascending) {
-                    // TODO: implementar el sort
+                  onSort: (columnIndex, _) {
+                    ref.read(sortHistorialProvider.notifier).sort(columnIndex);
                   },
                     label: const Text(
                   'Fecha',
@@ -46,6 +65,7 @@ class UserTable extends ConsumerWidget {
                 DataColumn(
                   tooltip: 'Ordernar por monto',
                   onSort: (columnIndex, ascending) {
+                    ref.read(sortHistorialProvider.notifier).sort(columnIndex);
                   },
                     label: const Text(
                   'Monto',
@@ -55,7 +75,7 @@ class UserTable extends ConsumerWidget {
                 
               ],
               rows: [
-                ...historial?.toList().map((historial) => _customDataRow(historial, context, ref, userId)) ?? []
+                ...sortedHistorial.toList().map((historial) => _customDataRow(historial, context, ref, userId)) 
               ]),
         ),
       ),

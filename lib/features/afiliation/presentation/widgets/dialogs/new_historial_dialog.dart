@@ -41,13 +41,14 @@ class NewHistorialDialog extends ConsumerWidget {
           color: WidgetStatePropertyAll(colors.onError),
           onPressed: (){
             context.pop();
-            userFormNotifier.onFormsumbit();
           },
           ),
              ActionChip(
           label:  Text('Aceptar', style: TextStyle(color: colors.onSurface),),
           color: WidgetStatePropertyAll(colors.surface),
           onPressed: (){
+            userFormNotifier.onFormsumbit();
+            if( userForm.amount.isNotValid ) return;
             context.pop();
           },
           ),

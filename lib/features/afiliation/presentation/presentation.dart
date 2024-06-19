@@ -16,6 +16,9 @@ export 'providers/users/user_provider.dart';
 export 'providers/users/new_user_historial_form_provider.dart';
 // search delegate
 export 'providers/search_delegate/search_delegate_provider.dart';
+// sort
+export 'providers/sort/sort_user_provider.dart';
+export 'providers/sort/sort_historial_provider.dart';
 
 
 //* widgets

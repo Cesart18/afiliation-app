@@ -13,6 +13,7 @@ export 'providers/users/new_user_form_input_provider.dart';
 export 'providers/users/user_repository_provider.dart';
 export 'providers/users/users_providers.dart';
 export 'providers/users/user_provider.dart';
+export 'providers/users/new_user_historial_form_provider.dart';
 // search delegate
 export 'providers/search_delegate/search_delegate_provider.dart';
 
@@ -20,6 +21,7 @@ export 'providers/search_delegate/search_delegate_provider.dart';
 //* widgets
 //  user
 export 'widgets/user/new_afiliation_widget.dart';
+export 'widgets/user/new_registry_widget.dart';
 //  inputs
 export 'widgets/inputs/custom_text_input.dart';
 // buttons

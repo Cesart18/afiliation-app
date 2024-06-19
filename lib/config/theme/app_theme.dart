@@ -9,7 +9,7 @@ class AppTheme {
     AppTheme({this.isDarkmode = false});
     ThemeData getTheme() => ThemeData(
       brightness: isDarkmode ? Brightness.dark : Brightness.light,
-      colorSchemeSeed: Colors.blue,
+      colorSchemeSeed: const Color.fromARGB(255, 29, 193, 211),
     );
 
   }

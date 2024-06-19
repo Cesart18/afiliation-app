@@ -13,6 +13,8 @@ class CustomTextInput extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
   final TextEditingController? controller;
+  final bool? enabled;
+  final Color? borderColor;
 
   const CustomTextInput({
       super.key,
@@ -25,7 +27,9 @@ class CustomTextInput extends StatefulWidget {
       this.onFieldSubmitted,
       this.inputFormatters,
       this.keyboardType,
-      this.controller
+      this.controller,
+      this.enabled,
+      this.borderColor
      });
 
   @override
@@ -43,7 +47,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
     OutlineInputBorder border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(8),
       borderSide: BorderSide(
-        color: isHovered ? colors.primary : colors.onSurface,
+        color: isHovered ? colors.primary : widget.borderColor ?? colors.onSurface,
         width: isHovered ? 2.0 : 1.5
       )
     );
@@ -82,6 +86,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
         keyboardType: widget.keyboardType,
         inputFormatters: widget.inputFormatters,
         controller: widget.controller,
+        enabled: widget.enabled,
           
       ),
     );

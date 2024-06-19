@@ -21,6 +21,9 @@ class UserTable extends StatelessWidget {
                 outside: BorderSide(
                   color: colors.onSurface,
                 ),
+                inside: BorderSide(
+                  color: colors.onSurface,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
 

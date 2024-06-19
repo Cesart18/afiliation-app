@@ -1,3 +1,4 @@
+import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:afiliados_app/features/afiliation/presentation/widgets/table/user_table.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +20,13 @@ class UserScreen extends ConsumerWidget {
           elevation: 8,
           shadowColor: colors.surface,
           surfaceTintColor: colors.surface,
-          title: Text(user?.firstName ?? 'No hay usuario'),
+          title: Text('Registro de ${TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay usuario')}'),
         ),
         body: Center(
           child: Column(
             children: [
               const SizedBox(height: 50,),
+              NewRegistryWidget(user: user,),
               const SizedBox(height: 50,),
               UserTable(user: user)
       

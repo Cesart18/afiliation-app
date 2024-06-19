@@ -63,16 +63,25 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     void onFormsumbit() async {
     _touchedEveryField();
 
-    if (state.amount.isNotValid) return;
     state = state.copyWith(isPosting: true);
 
     if( !state.editing ){
+    if (state.amount.isNotValid ) return;
       final newHistorial = UserHistorial(date: DateTime.now(), amount: state.amount.value);
       await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial);
       clearAmount();
     }
+    if( state.firstName.isNotValid && state.lastName.isNotValid && state.nationalId.isNotValid ) return;
 
-    state = state.copyWith(isPosting: false);
+    final updatedUser = user
+    ?..firstName = state.firstName.value.trim().toLowerCase()
+    ..lastName = state.lastName.value.trim().toLowerCase()
+    ..nationalId = '${state.nationalId.value}'
+    ..isDoctor = state.isDoctor;
+
+    await userNotifier.updateUser(updatedUser ?? User());
+
+    state = state.copyWith(isPosting: false, editing: false);
 
   }
 
@@ -121,7 +130,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
       state = state.copyWith(
         firstName: FirstName.dirty(TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay')),
         lastName: LastName.dirty(TextFormatter.firstLetterToUpper(user?.lastName ?? 'No hay')),
-        nationalId: NationalId.dirty(user?.nationalId ?? 0),
+        nationalId: NationalId.dirty(int.tryParse(user?.nationalId ?? '0') ?? 0),
       );
     }
 

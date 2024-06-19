@@ -35,7 +35,7 @@ const UserSchema = CollectionSchema(
     r'nationalId': PropertySchema(
       id: 3,
       name: r'nationalId',
-      type: IsarType.long,
+      type: IsarType.string,
     )
   },
   estimateSize: _userEstimateSize,
@@ -52,8 +52,8 @@ const UserSchema = CollectionSchema(
       properties: [
         IndexPropertySchema(
           name: r'nationalId',
-          type: IndexType.value,
-          caseSensitive: false,
+          type: IndexType.hash,
+          caseSensitive: true,
         )
       ],
     )
@@ -81,6 +81,7 @@ int _userEstimateSize(
   var bytesCount = offsets.last;
   bytesCount += 3 + object.firstName.length * 3;
   bytesCount += 3 + object.lastName.length * 3;
+  bytesCount += 3 + object.nationalId.length * 3;
   return bytesCount;
 }
 
@@ -93,7 +94,7 @@ void _userSerialize(
   writer.writeString(offsets[0], object.firstName);
   writer.writeBool(offsets[1], object.isDoctor);
   writer.writeString(offsets[2], object.lastName);
-  writer.writeLong(offsets[3], object.nationalId);
+  writer.writeString(offsets[3], object.nationalId);
 }
 
 User _userDeserialize(
@@ -102,13 +103,12 @@ User _userDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = User(
-    firstName: reader.readString(offsets[0]),
-    isDoctor: reader.readBool(offsets[1]),
-    lastName: reader.readString(offsets[2]),
-    nationalId: reader.readLong(offsets[3]),
-  );
+  final object = User();
+  object.firstName = reader.readString(offsets[0]);
   object.id = id;
+  object.isDoctor = reader.readBool(offsets[1]);
+  object.lastName = reader.readString(offsets[2]);
+  object.nationalId = reader.readString(offsets[3]);
   return object;
 }
 
@@ -126,7 +126,7 @@ P _userDeserializeProp<P>(
     case 2:
       return (reader.readString(offset)) as P;
     case 3:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -147,38 +147,38 @@ void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
 }
 
 extension UserByIndex on IsarCollection<User> {
-  Future<User?> getByNationalId(int nationalId) {
+  Future<User?> getByNationalId(String nationalId) {
     return getByIndex(r'nationalId', [nationalId]);
   }
 
-  User? getByNationalIdSync(int nationalId) {
+  User? getByNationalIdSync(String nationalId) {
     return getByIndexSync(r'nationalId', [nationalId]);
   }
 
-  Future<bool> deleteByNationalId(int nationalId) {
+  Future<bool> deleteByNationalId(String nationalId) {
     return deleteByIndex(r'nationalId', [nationalId]);
   }
 
-  bool deleteByNationalIdSync(int nationalId) {
+  bool deleteByNationalIdSync(String nationalId) {
     return deleteByIndexSync(r'nationalId', [nationalId]);
   }
 
-  Future<List<User?>> getAllByNationalId(List<int> nationalIdValues) {
+  Future<List<User?>> getAllByNationalId(List<String> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return getAllByIndex(r'nationalId', values);
   }
 
-  List<User?> getAllByNationalIdSync(List<int> nationalIdValues) {
+  List<User?> getAllByNationalIdSync(List<String> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'nationalId', values);
   }
 
-  Future<int> deleteAllByNationalId(List<int> nationalIdValues) {
+  Future<int> deleteAllByNationalId(List<String> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return deleteAllByIndex(r'nationalId', values);
   }
 
-  int deleteAllByNationalIdSync(List<int> nationalIdValues) {
+  int deleteAllByNationalIdSync(List<String> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return deleteAllByIndexSync(r'nationalId', values);
   }
@@ -204,14 +204,6 @@ extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
   QueryBuilder<User, User, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
-    });
-  }
-
-  QueryBuilder<User, User, QAfterWhere> anyNationalId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'nationalId'),
-      );
     });
   }
 }
@@ -283,7 +275,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
   }
 
   QueryBuilder<User, User, QAfterWhereClause> nationalIdEqualTo(
-      int nationalId) {
+      String nationalId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'nationalId',
@@ -293,7 +285,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
   }
 
   QueryBuilder<User, User, QAfterWhereClause> nationalIdNotEqualTo(
-      int nationalId) {
+      String nationalId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -324,51 +316,6 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
               includeUpper: false,
             ));
       }
-    });
-  }
-
-  QueryBuilder<User, User, QAfterWhereClause> nationalIdGreaterThan(
-    int nationalId, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'nationalId',
-        lower: [nationalId],
-        includeLower: include,
-        upper: [],
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterWhereClause> nationalIdLessThan(
-    int nationalId, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'nationalId',
-        lower: [],
-        upper: [nationalId],
-        includeUpper: include,
-      ));
-    });
-  }
-
-  QueryBuilder<User, User, QAfterWhereClause> nationalIdBetween(
-    int lowerNationalId,
-    int upperNationalId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'nationalId',
-        lower: [lowerNationalId],
-        includeLower: includeLower,
-        upper: [upperNationalId],
-        includeUpper: includeUpper,
-      ));
     });
   }
 }
@@ -710,46 +657,55 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> nationalIdEqualTo(int value) {
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'nationalId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdGreaterThan(
-    int value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'nationalId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdLessThan(
-    int value, {
+    String value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'nationalId',
         value: value,
+        caseSensitive: caseSensitive,
       ));
     });
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdBetween(
-    int lower,
-    int upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -758,6 +714,75 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'nationalId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'nationalId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'nationalId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'nationalId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nationalId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'nationalId',
+        value: '',
       ));
     });
   }
@@ -956,9 +981,10 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
     });
   }
 
-  QueryBuilder<User, User, QDistinct> distinctByNationalId() {
+  QueryBuilder<User, User, QDistinct> distinctByNationalId(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'nationalId');
+      return query.addDistinctBy(r'nationalId', caseSensitive: caseSensitive);
     });
   }
 }
@@ -988,7 +1014,7 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, int, QQueryOperations> nationalIdProperty() {
+  QueryBuilder<User, String, QQueryOperations> nationalIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nationalId');
     });

@@ -51,7 +51,7 @@ class UserDatasourceImpl implements UserDatasource{
     final isar = await db;
     final usersQ = query.isEmpty 
         ? isar.users.where().watch(fireImmediately: true) 
-        : isar.users.filter().firstNameStartsWith(query).or().lastNameStartsWith(query).watch(fireImmediately: true);
+        : isar.users.filter().firstNameContains(query).or().lastNameContains(query).or().nationalIdStartsWith(query).watch(fireImmediately: true);
 
       yield* usersQ;
   } catch (e) {
@@ -65,7 +65,7 @@ class UserDatasourceImpl implements UserDatasource{
   Future<void> updateUser(User updatedUser) async {
     final isar = await db;
       await isar.writeTxn(() async{
-      User? user = await isar.users.get(updatedUser.id!);
+      User? user = await isar.users.get(updatedUser.id ?? 0);
       user = updatedUser;
       await isar.users.put(user);
     });

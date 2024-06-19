@@ -104,7 +104,7 @@ class NewRegistryWidget extends ConsumerWidget {
             enabled: !isEnabled,
             labelText: 'Monto facturado',
             hintText: '10.00',
-            errorMessage: userForm.isFormPosted ? userForm.amount.errorMessage : null,
+            errorMessage: (userForm.isFormPosted && !userForm.editing) ? userForm.amount.errorMessage : null,
             onChanged: (value) => userFormNotifier.onAmountChanged(double.tryParse(value) ?? 0.0),
             onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
             suffixIcon: userForm.amountController.value.text.isNotEmpty ? IconButton(onPressed: (){
@@ -121,6 +121,7 @@ class NewRegistryWidget extends ConsumerWidget {
           /// Tipo de usuario
            FittedBox(child: CustomDrowdownButton(
             initialSelection: userForm.isDoctor,
+            onSelected: userFormNotifier.onTypeUserChanged,
             enabled: isEnabled,
             borderColor: isEnabled ? colors.error : null,
           )),

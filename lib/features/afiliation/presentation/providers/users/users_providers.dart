@@ -27,7 +27,7 @@ class UsersNotifier extends StateNotifier<UsersState> {
       required int nationalId,
       required double amount,
       required bool isDoctor}) async {
-    final newUser =      User(firstName: firstName, lastName: lastName, nationalId: nationalId ,isDoctor: isDoctor);
+    final newUser =      User()..firstName = firstName..lastName = lastName..nationalId = '$nationalId'..isDoctor = isDoctor;
     final newHistorial = UserHistorial(date: DateTime.now(), amount: amount);
     await userRepository.addNewUser(newUser, newHistorial);
   }
@@ -38,6 +38,10 @@ class UsersNotifier extends StateNotifier<UsersState> {
   
   Future<void> addNewHistorial( int userId, UserHistorial historial ) async {
     await userRepository.addNewHistorial(userId, historial);
+  }
+
+  Future<void> updateUser( User user ) async {
+    await userRepository.updateUser(user);
   }
 
 }

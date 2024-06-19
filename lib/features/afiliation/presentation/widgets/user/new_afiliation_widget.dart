@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../presentation.dart';
 
-class NewRegistryWidget extends ConsumerWidget {
-  const NewRegistryWidget({super.key});
+class NewAfiliationWidget extends ConsumerWidget {
+  const NewAfiliationWidget({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

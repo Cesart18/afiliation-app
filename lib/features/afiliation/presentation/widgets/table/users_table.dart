@@ -118,7 +118,6 @@ class _TableBody extends ConsumerWidget {
         Tooltip(
             message: 'Registro del usuario',
              child: IconButton(onPressed: (){
-                ref.read(userFormInputProvider.notifier).initialControllerToUpdate(user);
                 context.push('/user/${user.id}');
              }, icon: const Icon(Icons.file_open_rounded,)),
            ),
@@ -151,7 +150,9 @@ class _TableBody extends ConsumerWidget {
 }
 
 _showModal(BuildContext context, Widget widget ){
-  showDialog(context: context, builder: (context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context, builder: (context) {
     return widget;
   },);
 }

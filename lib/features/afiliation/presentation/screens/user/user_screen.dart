@@ -25,7 +25,6 @@ class UserScreen extends ConsumerWidget {
           child: Column(
             children: [
               const SizedBox(height: 50,),
-              NewRegistryWidget(),
               const SizedBox(height: 50,),
               UserTable(user: user)
       

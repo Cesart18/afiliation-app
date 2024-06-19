@@ -1,4 +1,3 @@
-import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
@@ -61,29 +60,15 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     if (!state.isValid) return;
 
     state = state.copyWith(isPosting: true);
-
     await userNotifier.createNewUser(
         firstName: state.firstName.value.trim().toLowerCase(),
         lastName: state.lastName.value.trim().toLowerCase(),
         nationalId: state.nationalId.value,
         amount: state.amount.value,
         isDoctor: state.isDoctor);
-
     state = state.copyWith(isPosting: false);
     disposeAll();
-  }
 
-  initialControllerToUpdate(User? user) {
-    state = state.copyWith(
-      firstName: FirstName.dirty(user?.firstName ?? ''),
-      lastName: LastName.dirty(user?.lastName ?? ''),
-      nationalId: NationalId.dirty(user?.nationalId ?? 0),
-      isDoctor: user?.isDoctor,
-      firstNameController: TextEditingController(text: user?.firstName),
-      lastNameController: TextEditingController(text: user?.lastName),
-      nationalIdController:
-          TextEditingController(text: user?.nationalId.toString()),
-    );
   }
 
   _touchedEveryField() {

@@ -9,7 +9,7 @@ export 'screens/user/user_screen.dart';
 //  theme
 export 'providers/theme/app_theme_provider.dart';
 // users
-export 'providers/users/user_form_input_provider.dart';
+export 'providers/users/new_user_form_input_provider.dart';
 export 'providers/users/user_repository_provider.dart';
 export 'providers/users/users_providers.dart';
 export 'providers/users/user_provider.dart';
@@ -19,7 +19,7 @@ export 'providers/search_delegate/search_delegate_provider.dart';
 
 //* widgets
 //  user
-export 'widgets/user/new_registry.dart';
+export 'widgets/user/new_afiliation_widget.dart';
 //  inputs
 export 'widgets/inputs/custom_text_input.dart';
 // buttons

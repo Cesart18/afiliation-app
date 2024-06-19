@@ -104,10 +104,10 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
   void disposeAll() {
     state = state.copyWith(
         isDoctor: false, isValid: false, isFormPosted: false, isPosting: false);
-    _clearControllers();
+    clearControllers();
   }
 
-  _clearControllers() {
+  clearControllers() {
     clearFistName();
     clearLastName();
     clearNationalId();

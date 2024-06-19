@@ -11,24 +11,28 @@ class UserScreen extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     final user = ref.watch(userProvider(id)).user;
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 8,
-        shadowColor: colors.surface,
-        surfaceTintColor: colors.surface,
-        title: Text(user?.firstName ?? 'No hay usuario'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 50,),
-            NewRegistryWidget(),
-            const SizedBox(height: 50,),
-            UserTable(user: user)
-
-          ],
+    return PopScope(
+      canPop: true,
+      onPopInvoked: (didPop) => ref.read(userFormInputProvider.notifier).clearControllers(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 8,
+          shadowColor: colors.surface,
+          surfaceTintColor: colors.surface,
+          title: Text(user?.firstName ?? 'No hay usuario'),
         ),
-      )
+        body: Center(
+          child: Column(
+            children: [
+              const SizedBox(height: 50,),
+              NewRegistryWidget(),
+              const SizedBox(height: 50,),
+              UserTable(user: user)
+      
+            ],
+          ),
+        )
+      ),
     );
   }
 }

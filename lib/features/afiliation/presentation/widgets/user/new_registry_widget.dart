@@ -12,6 +12,7 @@ class NewRegistryWidget extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     final userForm = ref.watch(newUserHistorialProvider(user));
+    final userFormNotifier = ref.read(newUserHistorialProvider(user).notifier);
     final isEnabled = userForm.editing;
     final firstNamecontroller = userForm.firstNameController;
     final lastNameController = userForm.lastNameController;
@@ -46,8 +47,11 @@ class NewRegistryWidget extends ConsumerWidget {
             borderColor: isEnabled ? colors.error : null,
             labelText: 'Nombre',
             hintText: 'Luis',
-              errorMessage: userForm.isFormPosted ? userForm.firstName.errorMessage : null,
+              errorMessage: userForm.firstName.errorMessage ,
+              onChanged: userFormNotifier.onFirstNameChanged,
+              onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
               suffixIcon: ( userForm.firstNameController.value.text.isNotEmpty  && isEnabled ) ? IconButton(onPressed: (){
+                userFormNotifier.clearFistName();
               }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
             ),
       ),
@@ -62,8 +66,11 @@ class NewRegistryWidget extends ConsumerWidget {
           borderColor: isEnabled ? colors.error : null,
           labelText: 'Apellido',
           hintText: 'Moreno',
-              errorMessage: userForm.isFormPosted ? userForm.lastName.errorMessage : null,
+              errorMessage: userForm.lastName.errorMessage,
+              onChanged: userFormNotifier.onLastNameChanged,
+              onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
               suffixIcon: (userForm.lastNameController.value.text.isNotEmpty  && isEnabled) ? IconButton(onPressed: (){
+                userFormNotifier.clearLastName();
               }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null 
             ),
           ),
@@ -76,8 +83,11 @@ class NewRegistryWidget extends ConsumerWidget {
           borderColor: isEnabled ? colors.error : null,
           labelText: 'Cedula',
           hintText: '123.456.789',
-              errorMessage: userForm.isFormPosted ? userForm.nationalId.errorMessage : null,
+              errorMessage: userForm.nationalId.errorMessage ,
+              onChanged: (value) => userFormNotifier.onNationalIdChanged(int.tryParse(value) ?? 0),
+              onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
               suffixIcon: (userForm.nationalIdController.value.text.isNotEmpty && isEnabled) ? IconButton(onPressed: (){
+                userFormNotifier.clearNationalId();
               }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly
@@ -91,10 +101,14 @@ class NewRegistryWidget extends ConsumerWidget {
             flex: 2,
             child: CustomTextInput(
             controller: amountController,
+            enabled: !isEnabled,
             labelText: 'Monto facturado',
             hintText: '10.00',
             errorMessage: userForm.isFormPosted ? userForm.amount.errorMessage : null,
+            onChanged: (value) => userFormNotifier.onAmountChanged(double.tryParse(value) ?? 0.0),
+            onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
             suffixIcon: userForm.amountController.value.text.isNotEmpty ? IconButton(onPressed: (){
+              userFormNotifier.clearAmount();
             }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
             textAlign: TextAlign.end,
             inputFormatters: [
@@ -119,8 +133,18 @@ class NewRegistryWidget extends ConsumerWidget {
               child: PrimaryButton(
               text: 'Aceptar',
               onPressed: (){
-              },
-                        ),
+                userFormNotifier.onFormsumbit();
+              }),
+            ),
+          const SizedBox(width: 14,),
+            Tooltip(
+              message: 'Editar usuario',
+              child: IconButton(
+                onPressed: (){
+                  userFormNotifier.toggleEdit();
+                },
+                icon: const Icon(Icons.edit),
+              )
             ),
         ],
       ),

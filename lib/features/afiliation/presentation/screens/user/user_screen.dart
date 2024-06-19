@@ -1,8 +1,8 @@
-import 'package:afiliados_app/config/config.dart';
-import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
-import 'package:afiliados_app/features/afiliation/presentation/widgets/table/user_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:isar/isar.dart';
+import 'package:afiliados_app/config/config.dart';
+import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 
 class UserScreen extends ConsumerWidget {
   final String id;
@@ -12,6 +12,7 @@ class UserScreen extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     final colors = Theme.of(context).colorScheme;
     final user = ref.watch(userProvider(id)).user;
+    final historialAsync = user?.historial.filter().watch(fireImmediately: true);
     return PopScope(
       canPop: true,
       onPopInvoked: (didPop) => ref.read(userFormInputProvider.notifier).clearControllers(),
@@ -28,7 +29,12 @@ class UserScreen extends ConsumerWidget {
               const SizedBox(height: 50,),
               NewRegistryWidget(user: user,),
               const SizedBox(height: 50,),
-              UserTable(user: user)
+              StreamBuilder(stream: historialAsync, builder: (context, snapshot) {
+                if( snapshot.hasData ){
+                  return UserTable(historial: snapshot.data!.toList());
+                }
+                return const CircularProgressIndicator();
+              },)
       
             ],
           ),
@@ -37,6 +43,7 @@ class UserScreen extends ConsumerWidget {
     );
   }
 }
+
 
 
 

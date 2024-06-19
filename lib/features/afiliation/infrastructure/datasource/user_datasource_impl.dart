@@ -29,9 +29,10 @@ class UserDatasourceImpl implements UserDatasource{
   @override
   Future<void> deleteUser(int userId) async {
     final isar = await db;
-
+    
     await isar.writeTxn(() async{
-      isar.users.filter().idEqualTo(userId).deleteFirst();
+      await isar.userHistorials.filter().user((user) => user.idEqualTo(userId)).deleteAll();
+      await isar.users.filter().idEqualTo(userId).deleteFirst();
     });
   }
 
@@ -75,15 +76,19 @@ class UserDatasourceImpl implements UserDatasource{
   Future<void> addNewHistorial(int userId, UserHistorial historial) async{
     final isar = await db;
     
-    final user = await isar.users.filter().idEqualTo(userId).findFirst()
+    final user = await isar.users.get(userId)
     ?..historial.add(historial);
 
     await isar.writeTxn(() async{
-      await isar.users.put(user!);
+      await isar.userHistorials.put(historial);
+      await user?.historial.save();
     });
+
+    // final prueba = await isar.userHistorials.filter().user((user)=> user.idEqualTo(userId)).watch();
     
 // TODO: manejar los errores
     
   }
+ 
 
 }

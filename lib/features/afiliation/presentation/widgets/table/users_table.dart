@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class UsersTable extends ConsumerWidget {
+class UsersTable extends ConsumerStatefulWidget {
   const UsersTable({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
+  UsersTableState createState() => UsersTableState();
+}
+
+class UsersTableState extends ConsumerState<UsersTable> {
+  @override
+  Widget build(BuildContext context) {
     final usersAsync = ref.watch(usersStreamProvider);
     return usersAsync.when(
         data: (data) => _TableBody(users: data),
@@ -160,8 +165,8 @@ _showModal(BuildContext context, Widget widget ){
 double _totalAmount( List<UserHistorial> historial ){
   double totalAmount = 0;
   final listHistorial = historial.toList();
-    for ( final amount in listHistorial ){
-      totalAmount += amount.amount;
+    for ( int i = 0; i < listHistorial.length; i++ ){
+      totalAmount += listHistorial[i].amount;
     }
   return totalAmount;
 }

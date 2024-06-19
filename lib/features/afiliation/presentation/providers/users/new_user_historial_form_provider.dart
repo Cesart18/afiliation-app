@@ -1,16 +1,20 @@
 import 'package:afiliados_app/config/config.dart';
+import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
+import 'package:formz/formz.dart';
 
 final newUserHistorialProvider = StateNotifierProvider.family<NewUserHistorialNotifier,NewUserHistorialState, User?>((ref, user) {
-  return NewUserHistorialNotifier(user: user);
+  final userNotifier = ref.watch(usersProvider.notifier);
+  return NewUserHistorialNotifier(user: user, userNotifier: userNotifier);
 });
 
 class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
   final User? user;
-  NewUserHistorialNotifier({ required this.user })
+  final UsersNotifier userNotifier;
+  NewUserHistorialNotifier({ required this.user, required this.userNotifier })
       : super(NewUserHistorialState(
         firstNameController: TextEditingController(text: TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay')),
         lastNameController: TextEditingController(text: TextFormatter.firstLetterToUpper(user?.lastName ?? 'No hay')),
@@ -19,6 +23,99 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
       )){
         _initValues();
       }
+
+      void onFirstNameChanged(String value) {
+    final newFirstName = FirstName.dirty(value);
+    state = state.copyWith(
+        firstName: newFirstName,
+        isValid: Formz.validate(
+            [newFirstName, state.lastName, state.amount, state.nationalId]));
+  }
+
+  void onLastNameChanged(String value) {
+    final newLastName = LastName.dirty(value);
+    state = state.copyWith(
+        lastName: newLastName,
+        isValid: Formz.validate(
+            [newLastName, state.firstName, state.amount, state.nationalId]));
+  }
+
+  void onNationalIdChanged(int value) {
+    final newNationalId = NationalId.dirty(value);
+    state = state.copyWith(
+        nationalId: newNationalId,
+        isValid: Formz.validate(
+            [newNationalId, state.firstName, state.amount, state.lastName]));
+  }
+
+  void onAmountChanged(double value) {
+    final newAmount = Amount.dirty(value);
+    state = state.copyWith(
+        amount: newAmount,
+        isValid: Formz.validate(
+            [newAmount, state.firstName, state.lastName, state.nationalId]));
+  }
+
+  void onTypeUserChanged(bool? value) {
+    state = state.copyWith(isDoctor: value);
+  }
+
+    void onFormsumbit() async {
+    _touchedEveryField();
+
+    if (state.amount.isNotValid) return;
+    state = state.copyWith(isPosting: true);
+
+    if( !state.editing ){
+      final newHistorial = UserHistorial(date: DateTime.now(), amount: state.amount.value);
+      await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial);
+      clearAmount();
+    }
+
+    state = state.copyWith(isPosting: false);
+
+  }
+
+    _touchedEveryField() {
+    final firstName = FirstName.dirty(state.firstName.value);
+    final lastName = LastName.dirty(state.lastName.value);
+    final nationalId = NationalId.dirty(state.nationalId.value);
+    final amount = Amount.dirty(state.amount.value);
+
+    state = state.copyWith(
+        firstName: firstName,
+        lastName: lastName,
+        nationalId: nationalId,
+        amount: amount,
+        isFormPosted: true,
+        isValid: Formz.validate([firstName, lastName, amount, nationalId]));
+  }
+
+    toggleEdit(){
+      state = state.copyWith(
+        editing: !state.editing,
+      );
+    }
+
+    clearFistName() {
+    state = state.copyWith(firstName: const FirstName.pure());
+    state.firstNameController.clear();
+  }
+
+  clearLastName() {
+    state = state.copyWith(lastName: const LastName.pure());
+    state.lastNameController.clear();
+  }
+
+  clearNationalId() {
+    state = state.copyWith(nationalId: const NationalId.pure());
+    state.nationalIdController.clear();
+  }
+
+  clearAmount() {
+    state = state.copyWith(amount: const Amount.pure());
+    state.amountController.clear();
+  }
   
     _initValues(){
       state = state.copyWith(

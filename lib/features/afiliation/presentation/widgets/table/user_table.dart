@@ -2,18 +2,19 @@ import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:flutter/material.dart';
 
 class UserTable extends StatelessWidget {
-  final User? user;
-  const UserTable({super.key, required this.user});
+  final List<UserHistorial>? historial;
+  const UserTable({super.key, required this.historial});
 
   @override
   Widget build(BuildContext context) {
+    
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
     return Expanded(
       child: SingleChildScrollView(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-
+    
           /// table of users
           child: DataTable(
               columnSpacing: size.width * 0.03,
@@ -26,7 +27,7 @@ class UserTable extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
-
+    
               /// column of table
               columns:  [
                 DataColumn(
@@ -49,14 +50,15 @@ class UserTable extends StatelessWidget {
                 
               ],
               rows: [
-                ...user?.historial.toList().map((historial) => _customDataRow(historial, context)) ?? []
+                ...historial?.toList().map((historial) => _customDataRow(historial, context)) ?? []
               ]),
         ),
       ),
     );
   }
+}
 
-  DataRow _customDataRow(UserHistorial historial, BuildContext context) {
+DataRow _customDataRow(UserHistorial historial, BuildContext context) {
     return  DataRow(
       cells: [
         // TODO: formatear la hora
@@ -64,5 +66,3 @@ class UserTable extends StatelessWidget {
       DataCell(Text('${historial.amount}')),
     ]);
   }
-
-}

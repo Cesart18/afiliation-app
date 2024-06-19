@@ -19,8 +19,9 @@ class CustomDrowdownButton extends StatelessWidget {
           enabledBorder: border,
           focusedBorder: border,
           disabledBorder: border),
-        label: const Text('¿Es Doctor?'),
+        label: const Text('¿Es medico?'),
         initialSelection: initialSelection,
+        enableSearch: false,
         onSelected: onSelected,
         dropdownMenuEntries: const [
           DropdownMenuEntry(value: true, label: 'Si'),

@@ -31,6 +31,11 @@ const UserSchema = CollectionSchema(
       id: 2,
       name: r'lastName',
       type: IsarType.string,
+    ),
+    r'nationalId': PropertySchema(
+      id: 3,
+      name: r'nationalId',
+      type: IsarType.long,
     )
   },
   estimateSize: _userEstimateSize,
@@ -38,7 +43,21 @@ const UserSchema = CollectionSchema(
   deserialize: _userDeserialize,
   deserializeProp: _userDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'nationalId': IndexSchema(
+      id: -5894875709063437769,
+      name: r'nationalId',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'nationalId',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {
     r'historial': LinkSchema(
       id: 8571192864059613835,
@@ -74,6 +93,7 @@ void _userSerialize(
   writer.writeString(offsets[0], object.firstName);
   writer.writeBool(offsets[1], object.isDoctor);
   writer.writeString(offsets[2], object.lastName);
+  writer.writeLong(offsets[3], object.nationalId);
 }
 
 User _userDeserialize(
@@ -86,6 +106,7 @@ User _userDeserialize(
     firstName: reader.readString(offsets[0]),
     isDoctor: reader.readBool(offsets[1]),
     lastName: reader.readString(offsets[2]),
+    nationalId: reader.readLong(offsets[3]),
   );
   object.id = id;
   return object;
@@ -104,6 +125,8 @@ P _userDeserializeProp<P>(
       return (reader.readBool(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
+    case 3:
+      return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -123,10 +146,72 @@ void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
       .attach(col, col.isar.collection<UserHistorial>(), r'historial', id);
 }
 
+extension UserByIndex on IsarCollection<User> {
+  Future<User?> getByNationalId(int nationalId) {
+    return getByIndex(r'nationalId', [nationalId]);
+  }
+
+  User? getByNationalIdSync(int nationalId) {
+    return getByIndexSync(r'nationalId', [nationalId]);
+  }
+
+  Future<bool> deleteByNationalId(int nationalId) {
+    return deleteByIndex(r'nationalId', [nationalId]);
+  }
+
+  bool deleteByNationalIdSync(int nationalId) {
+    return deleteByIndexSync(r'nationalId', [nationalId]);
+  }
+
+  Future<List<User?>> getAllByNationalId(List<int> nationalIdValues) {
+    final values = nationalIdValues.map((e) => [e]).toList();
+    return getAllByIndex(r'nationalId', values);
+  }
+
+  List<User?> getAllByNationalIdSync(List<int> nationalIdValues) {
+    final values = nationalIdValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'nationalId', values);
+  }
+
+  Future<int> deleteAllByNationalId(List<int> nationalIdValues) {
+    final values = nationalIdValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'nationalId', values);
+  }
+
+  int deleteAllByNationalIdSync(List<int> nationalIdValues) {
+    final values = nationalIdValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'nationalId', values);
+  }
+
+  Future<Id> putByNationalId(User object) {
+    return putByIndex(r'nationalId', object);
+  }
+
+  Id putByNationalIdSync(User object, {bool saveLinks = true}) {
+    return putByIndexSync(r'nationalId', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByNationalId(List<User> objects) {
+    return putAllByIndex(r'nationalId', objects);
+  }
+
+  List<Id> putAllByNationalIdSync(List<User> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'nationalId', objects, saveLinks: saveLinks);
+  }
+}
+
 extension UserQueryWhereSort on QueryBuilder<User, User, QWhere> {
   QueryBuilder<User, User, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhere> anyNationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'nationalId'),
+      );
     });
   }
 }
@@ -192,6 +277,96 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdEqualTo(
+      int nationalId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'nationalId',
+        value: [nationalId],
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdNotEqualTo(
+      int nationalId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nationalId',
+              lower: [],
+              upper: [nationalId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nationalId',
+              lower: [nationalId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nationalId',
+              lower: [nationalId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'nationalId',
+              lower: [],
+              upper: [nationalId],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdGreaterThan(
+    int nationalId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nationalId',
+        lower: [nationalId],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdLessThan(
+    int nationalId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nationalId',
+        lower: [],
+        upper: [nationalId],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdBetween(
+    int lowerNationalId,
+    int upperNationalId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nationalId',
+        lower: [lowerNationalId],
+        includeLower: includeLower,
+        upper: [upperNationalId],
         includeUpper: includeUpper,
       ));
     });
@@ -534,6 +709,58 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'nationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'nationalId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'nationalId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension UserQueryObject on QueryBuilder<User, User, QFilterCondition> {}
@@ -632,6 +859,18 @@ extension UserQuerySortBy on QueryBuilder<User, User, QSortBy> {
       return query.addSortBy(r'lastName', Sort.desc);
     });
   }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByNationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationalId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> sortByNationalIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationalId', Sort.desc);
+    });
+  }
 }
 
 extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
@@ -682,6 +921,18 @@ extension UserQuerySortThenBy on QueryBuilder<User, User, QSortThenBy> {
       return query.addSortBy(r'lastName', Sort.desc);
     });
   }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByNationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationalId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<User, User, QAfterSortBy> thenByNationalIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nationalId', Sort.desc);
+    });
+  }
 }
 
 extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
@@ -702,6 +953,12 @@ extension UserQueryWhereDistinct on QueryBuilder<User, User, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'lastName', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<User, User, QDistinct> distinctByNationalId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'nationalId');
     });
   }
 }
@@ -728,6 +985,12 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
   QueryBuilder<User, String, QQueryOperations> lastNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastName');
+    });
+  }
+
+  QueryBuilder<User, int, QQueryOperations> nationalIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'nationalId');
     });
   }
 }

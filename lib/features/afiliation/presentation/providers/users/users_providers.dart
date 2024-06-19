@@ -24,9 +24,10 @@ class UsersNotifier extends StateNotifier<UsersState> {
   Future<void> createNewUser({
       required String firstName,
       required String lastName,
+      required int nationalId,
       required double amount,
       required bool isDoctor}) async {
-    final newUser =      User(firstName: firstName, lastName: lastName, isDoctor: isDoctor);
+    final newUser =      User(firstName: firstName, lastName: lastName, nationalId: nationalId ,isDoctor: isDoctor);
     final newHistorial = UserHistorial(date: DateTime.now(), amount: amount);
     await userRepository.addNewUser(newUser, newHistorial);
   }

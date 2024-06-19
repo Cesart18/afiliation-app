@@ -1,3 +1,4 @@
+import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
@@ -13,29 +14,42 @@ final userFormInputProvider = StateNotifierProvider.autoDispose<
 class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
   final UsersNotifier userNotifier;
   UserFormInputNotifier({required this.userNotifier})
-      : super(UserFormInputState()) {
-    initControllers();
-  }
+      : super(UserFormInputState(
+            firstNameController: TextEditingController(),
+            lastNameController: TextEditingController(),
+            nationalIdController: TextEditingController(),
+            amountController: TextEditingController()));
 
   void onFirstNameChanged(String value) {
     final newFirstName = FirstName.dirty(value);
     state = state.copyWith(
         firstName: newFirstName,
-        isValid: Formz.validate([newFirstName, state.lastName, state.amount]));
+        isValid: Formz.validate(
+            [newFirstName, state.lastName, state.amount, state.nationalId]));
   }
 
   void onLastNameChanged(String value) {
     final newLastName = LastName.dirty(value);
     state = state.copyWith(
         lastName: newLastName,
-        isValid: Formz.validate([newLastName, state.firstName, state.amount]));
+        isValid: Formz.validate(
+            [newLastName, state.firstName, state.amount, state.nationalId]));
   }
 
-  void onAmountChanged(String value) {
-    final newAmount = Amount.dirty(double.parse(value));
+  void onNationalIdChanged(int value) {
+    final newNationalId = NationalId.dirty(value);
+    state = state.copyWith(
+        nationalId: newNationalId,
+        isValid: Formz.validate(
+            [newNationalId, state.firstName, state.amount, state.lastName]));
+  }
+
+  void onAmountChanged(double value) {
+    final newAmount = Amount.dirty(value);
     state = state.copyWith(
         amount: newAmount,
-        isValid: Formz.validate([newAmount, state.firstName, state.lastName]));
+        isValid: Formz.validate(
+            [newAmount, state.firstName, state.lastName, state.nationalId]));
   }
 
   void onTypeUserChanged(bool? value) {
@@ -51,6 +65,7 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     await userNotifier.createNewUser(
         firstName: state.firstName.value.trim().toLowerCase(),
         lastName: state.lastName.value.trim().toLowerCase(),
+        nationalId: state.nationalId.value,
         amount: state.amount.value,
         isDoctor: state.isDoctor);
 
@@ -58,51 +73,65 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     disposeAll();
   }
 
+  initialControllerToUpdate(User? user) {
+    state = state.copyWith(
+      firstName: FirstName.dirty(user?.firstName ?? ''),
+      lastName: LastName.dirty(user?.lastName ?? ''),
+      nationalId: NationalId.dirty(user?.nationalId ?? 0),
+      isDoctor: user?.isDoctor,
+      firstNameController: TextEditingController(text: user?.firstName),
+      lastNameController: TextEditingController(text: user?.lastName),
+      nationalIdController:
+          TextEditingController(text: user?.nationalId.toString()),
+    );
+  }
+
   _touchedEveryField() {
     final firstName = FirstName.dirty(state.firstName.value);
     final lastName = LastName.dirty(state.lastName.value);
+    final nationalId = NationalId.dirty(state.nationalId.value);
     final amount = Amount.dirty(state.amount.value);
 
     state = state.copyWith(
         firstName: firstName,
         lastName: lastName,
+        nationalId: nationalId,
         amount: amount,
         isFormPosted: true,
-        isValid: Formz.validate([firstName, lastName, amount]));
+        isValid: Formz.validate([firstName, lastName, amount, nationalId]));
   }
 
   void disposeAll() {
     state = state.copyWith(
         isDoctor: false, isValid: false, isFormPosted: false, isPosting: false);
-    clearControllers();
+    _clearControllers();
   }
 
-  initControllers() {
-    state = state.copyWith(
-        firstNameController: TextEditingController(),
-        lastNameController: TextEditingController(),
-        amountController: TextEditingController());
-  }
-
-  clearControllers() {
+  _clearControllers() {
     clearFistName();
     clearLastName();
+    clearNationalId();
     clearAmount();
   }
 
   clearFistName() {
     state = state.copyWith(firstName: const FirstName.pure());
-    state.firstNameController?.clear();
+    state.firstNameController.clear();
   }
 
   clearLastName() {
     state = state.copyWith(lastName: const LastName.pure());
-    state.lastNameController?.clear();
+    state.lastNameController.clear();
+  }
+
+  clearNationalId() {
+    state = state.copyWith(nationalId: const NationalId.pure());
+    state.nationalIdController.clear();
   }
 
   clearAmount() {
     state = state.copyWith(amount: const Amount.pure());
-    state.amountController?.clear();
+    state.amountController.clear();
   }
 }
 
@@ -111,31 +140,36 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
 class UserFormInputState {
   final FirstName firstName;
   final LastName lastName;
+  final NationalId nationalId;
   final Amount amount;
   final bool isDoctor;
   final bool isValid;
   final bool isFormPosted;
   final bool isPosting;
-  final TextEditingController? firstNameController;
-  final TextEditingController? lastNameController;
-  final TextEditingController? amountController;
+  final TextEditingController firstNameController;
+  final TextEditingController lastNameController;
+  final TextEditingController nationalIdController;
+  final TextEditingController amountController;
 
   UserFormInputState({
     this.firstName = const FirstName.pure(),
     this.lastName = const LastName.pure(),
+    this.nationalId = const NationalId.pure(),
     this.amount = const Amount.pure(),
     this.isDoctor = false,
     this.isValid = false,
     this.isFormPosted = false,
     this.isPosting = false,
-    this.firstNameController,
-    this.lastNameController,
-    this.amountController,
+    required this.firstNameController,
+    required this.lastNameController,
+    required this.nationalIdController,
+    required this.amountController,
   });
 
   UserFormInputState copyWith({
     FirstName? firstName,
     LastName? lastName,
+    NationalId? nationalId,
     Amount? amount,
     bool? isDoctor,
     bool? isValid,
@@ -144,10 +178,12 @@ class UserFormInputState {
     TextEditingController? lastNameController,
     TextEditingController? firstNameController,
     TextEditingController? amountController,
+    TextEditingController? nationalIdController,
   }) =>
       UserFormInputState(
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
+        nationalId: nationalId ?? this.nationalId,
         amount: amount ?? this.amount,
         isDoctor: isDoctor ?? this.isDoctor,
         isValid: isValid ?? this.isValid,
@@ -155,6 +191,7 @@ class UserFormInputState {
         isPosting: isPosting ?? this.isPosting,
         lastNameController: lastNameController ?? this.lastNameController,
         firstNameController: firstNameController ?? this.firstNameController,
+        nationalIdController: nationalIdController ?? this.nationalIdController,
         amountController: amountController ?? this.amountController,
       );
 }

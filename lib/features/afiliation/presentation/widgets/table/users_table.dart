@@ -3,6 +3,7 @@ import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class UsersTable extends ConsumerWidget {
   const UsersTable({super.key});
@@ -17,32 +18,39 @@ class UsersTable extends ConsumerWidget {
   }
 }
 
-class _TableBody extends StatelessWidget {
+class _TableBody extends ConsumerWidget {
   final List<User> users;
   const _TableBody({required this.users});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
     return Expanded(
       child: SingleChildScrollView(
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+
+          /// table of users
           child: DataTable(
               columnSpacing: size.width * 0.03,
               border: TableBorder.symmetric(
                 outside: BorderSide(
                   color: colors.onSurface,
                 ),
+                inside: BorderSide(
+                  color: colors.onSurface
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
+
+              /// column of table
               columns:  [
                 const DataColumn(label: Text('')),
                 DataColumn(
                   tooltip: 'Ordernar por nombre',
                   onSort: (columnIndex, ascending) {
-                    
+                    // TODO: implementar el sort
                   },
                     label: const Text(
                   'Nombre',
@@ -55,6 +63,15 @@ class _TableBody extends StatelessWidget {
                   },
                     label: const Text(
                   'Apellido',
+                  overflow: TextOverflow.ellipsis,
+                )),
+                DataColumn(
+                  tooltip: 'Ordenar por cedula',
+                  onSort: (columnIndex, ascending) {
+                    
+                  },
+                    label: const Text(
+                  'Cedula',
                   overflow: TextOverflow.ellipsis,
                 )),
                 DataColumn(
@@ -87,28 +104,30 @@ class _TableBody extends StatelessWidget {
                  const DataColumn(label: Text('')),
               ],
               rows: [
-                ...users.map((user) => _customDataRow(user, context))
+                ...users.map((user) => _customDataRow(user, context, ref))
               ]),
         ),
       ),
     );
   }
 
-  DataRow _customDataRow(User user, BuildContext context) {
+  DataRow _customDataRow(User user, BuildContext context, WidgetRef ref) {
     return DataRow(
       cells: [
       DataCell(
         Tooltip(
             message: 'Registro del usuario',
              child: IconButton(onPressed: (){
-              // TODO: hacer un modal
+                ref.read(userFormInputProvider.notifier).initialControllerToUpdate(user);
+                context.push('/user/${user.id}');
              }, icon: const Icon(Icons.file_open_rounded,)),
            ),
       ),
       DataCell(Text(TextFormatter.firstLetterToUpper(user.firstName))),
       DataCell(Text(TextFormatter.firstLetterToUpper(user.lastName))),
-      DataCell((Text(user.isDoctor ? 'Medico' : 'Persona'))),
-      const DataCell(Text('100.00')),
+      DataCell(Text('${user.nationalId}')),
+      DataCell((Text(user.isDoctor ? 'Medico' : 'Usuario'))),
+      DataCell(Text('${ _totalAmount(user.historial.toList()) }')),
       const DataCell(Text('5%')),
        DataCell(Row(
          children: [
@@ -135,4 +154,13 @@ _showModal(BuildContext context, Widget widget ){
   showDialog(context: context, builder: (context) {
     return widget;
   },);
+}
+
+double _totalAmount( List<UserHistorial> historial ){
+  double totalAmount = 0;
+  final listHistorial = historial.toList();
+    for ( final amount in listHistorial ){
+      totalAmount += amount.amount;
+    }
+  return totalAmount;
 }

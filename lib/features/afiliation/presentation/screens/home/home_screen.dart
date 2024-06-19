@@ -39,7 +39,7 @@ class HomeScreen extends ConsumerWidget {
           
               SizedBox(height: 50,),       
               /// new afiliation
-              NewAfiliationWidget(),
+              NewRegistryWidget(),
           
               SizedBox(height: 50,),
               /// search input       

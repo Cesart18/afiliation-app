@@ -10,13 +10,16 @@ class User {
   Id? id;
   final String firstName;
   final String lastName;
-
+  @Index(unique: true)
+  final int nationalId;
   final historial = IsarLinks<UserHistorial>();
 
   final bool isDoctor;
 
-  User(
-      {required this.firstName,
+  User({
+      required this.firstName,
       required this.lastName,
-      required this.isDoctor});
+      required this.nationalId,
+      required this.isDoctor
+      });
 }

@@ -1,6 +1,8 @@
 //* screens
 // home
 export 'screens/home/home_screen.dart';
+// user
+export 'screens/user/user_screen.dart';
 
 
 //* providers
@@ -10,13 +12,14 @@ export 'providers/theme/app_theme_provider.dart';
 export 'providers/users/user_form_input_provider.dart';
 export 'providers/users/user_repository_provider.dart';
 export 'providers/users/users_providers.dart';
+export 'providers/users/user_provider.dart';
 // search delegate
 export 'providers/search_delegate/search_delegate_provider.dart';
 
 
 //* widgets
-//  new afiliation
-export 'widgets/new_afiliation/new_afiliation_widget.dart';
+//  user
+export 'widgets/user/new_registry.dart';
 //  inputs
 export 'widgets/inputs/custom_text_input.dart';
 // buttons

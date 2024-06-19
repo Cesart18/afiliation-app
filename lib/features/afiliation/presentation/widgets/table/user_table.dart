@@ -1,12 +1,16 @@
+import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
+import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserTable extends StatelessWidget {
+class UserTable extends ConsumerWidget {
+  final int userId;
   final List<UserHistorial>? historial;
-  const UserTable({super.key, required this.historial});
+  const UserTable({super.key, required this.historial, required this.userId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
@@ -17,7 +21,7 @@ class UserTable extends StatelessWidget {
     
           /// table of users
           child: DataTable(
-              columnSpacing: size.width * 0.03,
+              columnSpacing: size.width * 0.1,
               border: TableBorder.symmetric(
                 outside: BorderSide(
                   color: colors.onSurface,
@@ -47,10 +51,11 @@ class UserTable extends StatelessWidget {
                   'Monto',
                   overflow: TextOverflow.ellipsis,
                 )),
+                const DataColumn(label:  Text('')),
                 
               ],
               rows: [
-                ...historial?.toList().map((historial) => _customDataRow(historial, context)) ?? []
+                ...historial?.toList().map((historial) => _customDataRow(historial, context, ref, userId)) ?? []
               ]),
         ),
       ),
@@ -58,11 +63,17 @@ class UserTable extends StatelessWidget {
   }
 }
 
-DataRow _customDataRow(UserHistorial historial, BuildContext context) {
+DataRow _customDataRow(UserHistorial historial, BuildContext context, WidgetRef ref, int userId) {
     return  DataRow(
       cells: [
-        // TODO: formatear la hora
-      DataCell(Text('${historial.date}')),
-      DataCell(Text('${historial.amount}')),
+      DataCell(Text(Formatters.formatDateTime(historial.date))),
+      DataCell(Text('${historial.amount}\$')),
+      DataCell(Tooltip(
+            message: 'Eliminar registro',
+             child: IconButton(onPressed: (){
+              Functions.showModal(context, DeleteDialog(firstName: 'el registro',
+              callback: () => ref.read(usersProvider.notifier).deleteHistorial(userId,historial.id ?? 0)));
+             }, icon: const Icon(Icons.delete, color: Colors.red,)),
+           ),)
     ]);
   }

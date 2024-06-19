@@ -71,12 +71,12 @@ class _TableBody extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                 )),
                 DataColumn(
-                  tooltip: 'Ordenar por cedula',
+                  tooltip: 'Ordenar por cédula',
                   onSort: (columnIndex, ascending) {
                     
                   },
                     label: const Text(
-                  'Cedula',
+                  'Cédula',
                   overflow: TextOverflow.ellipsis,
                 )),
                 DataColumn(
@@ -127,11 +127,11 @@ class _TableBody extends ConsumerWidget {
              }, icon: const Icon(Icons.file_open_rounded,)),
            ),
       ),
-      DataCell(Text(TextFormatter.firstLetterToUpper(user.firstName))),
-      DataCell(Text(TextFormatter.firstLetterToUpper(user.lastName))),
-      DataCell(Text('${user.nationalId}')),
+      DataCell(Text(Formatters.firstLetterToUpper(user.firstName))),
+      DataCell(Text(Formatters.firstLetterToUpper(user.lastName))),
+      DataCell(Text(Formatters.formatNationalId(user.nationalId))),
       DataCell((Text(user.isDoctor ? 'Medico' : 'Usuario'))),
-      DataCell(Text('${ _totalAmount(user.historial.toList()) }')),
+      DataCell(Text('${ Formatters.totalAmount(user.historial.toList()) }')),
       const DataCell(Text('5%')),
        DataCell(Row(
          children: [
@@ -139,13 +139,15 @@ class _TableBody extends ConsumerWidget {
             Tooltip(
             message: 'Agregar nuevo registro',
              child: IconButton(onPressed: (){
-              // TODO: hacer un modal
+                Functions.showModal(context, NewHistorialDialog(user: user));
              }, icon: const Icon(Icons.note_add, color: Colors.green,)),
            ),
            Tooltip(
             message: 'Eliminar usuario',
              child: IconButton(onPressed: (){
-              _showModal(context, DeleteUserDialog(TextFormatter.firstLetterToUpper(user.firstName),user.id!));
+              Functions.showModal(context, DeleteDialog(
+                firstName: 'a ${Formatters.firstLetterToUpper(user.firstName)}',
+                callback: () => ref.read(usersProvider.notifier).deleteUser(user.id ?? 0),));
              }, icon: const Icon(Icons.delete, color: Colors.red,)),
            ),
          ],
@@ -154,19 +156,5 @@ class _TableBody extends ConsumerWidget {
   }
 }
 
-_showModal(BuildContext context, Widget widget ){
-  showDialog(
-    barrierDismissible: false,
-    context: context, builder: (context) {
-    return widget;
-  },);
-}
 
-double _totalAmount( List<UserHistorial> historial ){
-  double totalAmount = 0;
-  final listHistorial = historial.toList();
-    for ( int i = 0; i < listHistorial.length; i++ ){
-      totalAmount += listHistorial[i].amount;
-    }
-  return totalAmount;
-}
+

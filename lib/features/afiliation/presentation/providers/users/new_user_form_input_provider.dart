@@ -120,7 +120,6 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
   }
 }
 
-// TODO: la logica que puedo implementar para usuario existente es que al abrirlo los value de los inputs sean sus valores
 
 class UserFormInputState {
   final FirstName firstName;

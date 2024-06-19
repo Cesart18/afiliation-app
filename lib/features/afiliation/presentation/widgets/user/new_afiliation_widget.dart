@@ -72,7 +72,7 @@ class NewAfiliationWidget extends ConsumerWidget {
             flex: 3,
             child: CustomTextInput(
           controller: nationalIdController,
-          labelText: 'Cedula',
+          labelText: 'Cédula',
           hintText: '123.456.789',
               errorMessage: userForm.isFormPosted ? userForm.nationalId.errorMessage : null,
           onChanged: (value) => ref.read(userFormInputProvider.notifier).onNationalIdChanged( int.tryParse(value) ?? 0 ),

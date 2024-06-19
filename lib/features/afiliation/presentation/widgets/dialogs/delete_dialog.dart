@@ -1,12 +1,11 @@
-import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class DeleteUserDialog extends ConsumerWidget {
+class DeleteDialog extends ConsumerWidget {
   final String firstName;
-  final int userId;
-  const DeleteUserDialog(this.firstName, this.userId, {super.key});
+  final Function() callback;
+  const DeleteDialog({super.key,required  this.firstName, required this.callback, });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +14,7 @@ class DeleteUserDialog extends ConsumerWidget {
       title: Text('Alerta',
       style: TextStyle(color: colors.error),),
       content: IntrinsicHeight(
-        child: Text('Estas seguro que deseas eliminar a "$firstName"'),
+        child: Text('Estas seguro que deseas eliminar "$firstName"'),
       ),
       actions: [
         ActionChip(
@@ -23,7 +22,7 @@ class DeleteUserDialog extends ConsumerWidget {
           color: WidgetStatePropertyAll(colors.error),
           onPressed: (){
             context.pop();
-            ref.read(usersProvider.notifier).deleteUser(userId);
+            callback();
           },
           ),
         ActionChip(

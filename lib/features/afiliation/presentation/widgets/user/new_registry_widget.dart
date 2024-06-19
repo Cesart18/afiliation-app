@@ -81,7 +81,7 @@ class NewRegistryWidget extends ConsumerWidget {
           controller: nationalIdController,
           enabled: isEnabled,
           borderColor: isEnabled ? colors.error : null,
-          labelText: 'Cedula',
+          labelText: 'Cédula',
           hintText: '123.456.789',
               errorMessage: userForm.nationalId.errorMessage ,
               onChanged: (value) => userFormNotifier.onNationalIdChanged(int.tryParse(value) ?? 0),

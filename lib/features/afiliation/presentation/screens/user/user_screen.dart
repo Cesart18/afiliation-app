@@ -21,7 +21,7 @@ class UserScreen extends ConsumerWidget {
           elevation: 8,
           shadowColor: colors.surface,
           surfaceTintColor: colors.surface,
-          title: Text('Registro de ${TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay usuario')}'),
+          title: Text('Registro de ${Formatters.firstLetterToUpper(user?.firstName ?? 'No hay usuario')}'),
         ),
         body: Center(
           child: Column(
@@ -31,7 +31,7 @@ class UserScreen extends ConsumerWidget {
               const SizedBox(height: 50,),
               StreamBuilder(stream: historialAsync, builder: (context, snapshot) {
                 if( snapshot.hasData ){
-                  return UserTable(historial: snapshot.data!.toList());
+                  return UserTable(historial: snapshot.data!.toList(), userId: int.parse(id),);
                 }
                 return const CircularProgressIndicator();
               },)

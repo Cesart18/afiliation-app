@@ -12,7 +12,7 @@ class NationalId extends FormzInput<int, NationalIdError>{
   String? get errorMessage{
     if ( isPure || isValid ) return null;
 
-    if ( displayError == NationalIdError.empty ) return 'Cedula es requerida';
+    if ( displayError == NationalIdError.empty ) return 'Cédula es requerida';
 
     return null;
   }

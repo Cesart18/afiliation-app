@@ -84,10 +84,16 @@ class UserDatasourceImpl implements UserDatasource{
       await user?.historial.save();
     });
 
-    // final prueba = await isar.userHistorials.filter().user((user)=> user.idEqualTo(userId)).watch();
-    
 // TODO: manejar los errores
-    
+  }
+  
+  @override
+  Future<void> deleteHistorial(int userId, int historialId) async{
+    final isar = await db;
+
+    await isar.writeTxn(() async {
+      await isar.userHistorials.filter().user(( user ) => user.idEqualTo(userId)).idEqualTo(historialId).deleteFirst();
+    });
   }
  
 

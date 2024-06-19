@@ -16,8 +16,8 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
   final UsersNotifier userNotifier;
   NewUserHistorialNotifier({ required this.user, required this.userNotifier })
       : super(NewUserHistorialState(
-        firstNameController: TextEditingController(text: TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay')),
-        lastNameController: TextEditingController(text: TextFormatter.firstLetterToUpper(user?.lastName ?? 'No hay')),
+        firstNameController: TextEditingController(text: Formatters.firstLetterToUpper(user?.firstName ?? 'No hay')),
+        lastNameController: TextEditingController(text: Formatters.firstLetterToUpper(user?.lastName ?? 'No hay')),
         nationalIdController: TextEditingController(text: user?.nationalId.toString()),
         amountController: TextEditingController()
       )){
@@ -128,8 +128,8 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
   
     _initValues(){
       state = state.copyWith(
-        firstName: FirstName.dirty(TextFormatter.firstLetterToUpper(user?.firstName ?? 'No hay')),
-        lastName: LastName.dirty(TextFormatter.firstLetterToUpper(user?.lastName ?? 'No hay')),
+        firstName: FirstName.dirty(Formatters.firstLetterToUpper(user?.firstName ?? 'No hay')),
+        lastName: LastName.dirty(Formatters.firstLetterToUpper(user?.lastName ?? 'No hay')),
         nationalId: NationalId.dirty(int.tryParse(user?.nationalId ?? '0') ?? 0),
       );
     }

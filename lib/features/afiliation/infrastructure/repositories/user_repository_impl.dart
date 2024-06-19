@@ -39,4 +39,9 @@ class UserRepositoryImpl implements UserRepository{
   Future<void> addNewHistorial(int userId, UserHistorial historial) {
     return datasource.addNewHistorial(userId, historial);
   }
+  
+  @override
+  Future<void> deleteHistorial(int userId, int historialId) {
+    return datasource.deleteHistorial(userId, historialId);
+  }
 }

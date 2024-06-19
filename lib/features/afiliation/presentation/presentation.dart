@@ -33,4 +33,5 @@ export 'widgets/search_delegate/search_delegate_input.dart';
 export 'widgets/table/users_table.dart';
 export 'widgets/table/user_table.dart';
 // dialogs
-export 'widgets/dialogs/delete_user_dialog.dart';
+export 'widgets/dialogs/delete_dialog.dart';
+export 'widgets/dialogs/new_historial_dialog.dart';

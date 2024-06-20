@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextInput extends StatefulWidget {
+class CustomTextFormField extends StatefulWidget {
 
   final String hintText;
   final String? labelText;
@@ -15,8 +15,10 @@ class CustomTextInput extends StatefulWidget {
   final TextEditingController? controller;
   final bool? enabled;
   final Color? borderColor;
+  final int? maxLength;
+  final bool obscureText;
 
-  const CustomTextInput({
+  const CustomTextFormField({
       super.key,
       required this.hintText,
       this.labelText,
@@ -29,13 +31,15 @@ class CustomTextInput extends StatefulWidget {
       this.keyboardType,
       this.controller,
       this.enabled,
-      this.borderColor
+      this.borderColor,
+      this.maxLength,
+      this.obscureText = false
      });
 
   @override
-  State<CustomTextInput> createState() => _CustomTextInputState();
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
-class _CustomTextInputState extends State<CustomTextInput> {
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
   bool isHovered = false;
   @override
   Widget build(BuildContext context) {
@@ -76,7 +80,8 @@ class _CustomTextInputState extends State<CustomTextInput> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           hoverColor: colors.primary,
           hintStyle: textStyle,
-          labelStyle: textStyle
+          labelStyle: textStyle,
+          counterText: ''
         ),
         textAlign: widget.textAlign,
         onChanged: widget.onChanged,
@@ -87,6 +92,8 @@ class _CustomTextInputState extends State<CustomTextInput> {
         inputFormatters: widget.inputFormatters,
         controller: widget.controller,
         enabled: widget.enabled,
+        maxLength: widget.maxLength,
+        obscureText: widget.obscureText,
           
       ),
     );

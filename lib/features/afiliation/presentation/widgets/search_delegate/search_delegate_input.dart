@@ -10,7 +10,7 @@ class SearchDelegateInput extends ConsumerWidget {
     return  SizedBox(
       width: 300,
       height: 50,
-      child:  CustomTextInput(
+      child:  CustomTextFormField(
         hintText: 'Buscar',
         suffixIcon: const Icon(Icons.search),
         onChanged: ref.read(searchDelegateProvider.notifier).onInputChanged,

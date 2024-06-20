@@ -24,7 +24,7 @@ class NewHistorialDialog extends ConsumerWidget {
           children: [
             Expanded(
                   flex: 2,
-                  child: CustomTextInput(
+                  child: CustomTextFormField(
                   controller: userForm.amountController,
                   labelText: 'Monto facturado',
                   hintText: '10.00',
@@ -43,7 +43,7 @@ class NewHistorialDialog extends ConsumerWidget {
                 const SizedBox(width: 14,),
                 Expanded(
                 flex: 2,
-                child: CustomTextInput(
+                child: CustomTextFormField(
                 controller: userForm.billNumberController,
                 labelText: 'Numero de factura',
                 hintText: '0000',

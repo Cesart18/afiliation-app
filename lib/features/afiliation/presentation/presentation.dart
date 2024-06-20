@@ -28,7 +28,7 @@ export 'providers/users/streams_providers.dart';
 export 'widgets/user/new_user_widget.dart';
 export 'widgets/user/new_historial_widget.dart';
 //  inputs
-export 'widgets/inputs/custom_text_input.dart';
+export '../../../shared/widgets/inputs/custom_text_input.dart';
 // buttons
 export 'widgets/buttons/primary_button.dart';
 export 'widgets/buttons/custom_dropdown_button.dart';

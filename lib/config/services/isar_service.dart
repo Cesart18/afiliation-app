@@ -1,4 +1,5 @@
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
+import 'package:afiliados_app/features/auth/domain/domain.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -13,7 +14,7 @@ class IsarService {
   Future<Isar> openDb() async{
     if( Isar.instanceNames.isEmpty ){
       final dir = await getApplicationDocumentsDirectory();
-      return await Isar.open([ UserSchema, UserHistorialSchema ],
+      return await Isar.open([ UserSchema, UserHistorialSchema, UserAdminSchema ],
       inspector: true,
        directory: dir.path);
     }

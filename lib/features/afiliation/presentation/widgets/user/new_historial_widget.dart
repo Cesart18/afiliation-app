@@ -44,7 +44,7 @@ class NewHistorialWidget extends ConsumerWidget {
                  /// Nombre
              Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
               controller: firstNamecontroller,
               enabled: isEnabled,
               borderColor: isEnabled ? colors.error : null,
@@ -63,7 +63,7 @@ class NewHistorialWidget extends ConsumerWidget {
         /// Apellido
              Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
             controller: lastNameController,
             enabled: isEnabled,
             borderColor: isEnabled ? colors.error : null,
@@ -80,7 +80,7 @@ class NewHistorialWidget extends ConsumerWidget {
             const SizedBox(width: 14,),
              Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
             controller: nationalIdController,
             enabled: isEnabled,
             borderColor: isEnabled ? colors.error : null,
@@ -106,7 +106,7 @@ class NewHistorialWidget extends ConsumerWidget {
                       /// Monto facturado
             Expanded(
               flex: 2,
-              child: CustomTextInput(
+              child: CustomTextFormField(
               controller: amountController,
               enabled: !isEnabled,
               labelText: 'Monto facturado',
@@ -126,7 +126,7 @@ class NewHistorialWidget extends ConsumerWidget {
             const SizedBox(width: 14,),
             Expanded(
               flex: 2,
-              child: CustomTextInput(
+              child: CustomTextFormField(
               controller: billNumberController,
               enabled: !isEnabled,
               labelText: 'Numero de factura',

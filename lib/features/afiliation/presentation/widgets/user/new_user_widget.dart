@@ -44,7 +44,7 @@ class NewUserWidget extends ConsumerWidget {
                 /// Nombre
                 Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
           controller: firstNamecontroller,
           labelText: 'Nombre',
           hintText: 'Luis',
@@ -61,7 +61,7 @@ class NewUserWidget extends ConsumerWidget {
         /// Apellido
              Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
             controller: lastNameController,
             labelText: 'Apellido',
             hintText: 'Moreno',
@@ -76,7 +76,7 @@ class NewUserWidget extends ConsumerWidget {
             const SizedBox(width: 14,),
              Expanded(
               flex: 3,
-              child: CustomTextInput(
+              child: CustomTextFormField(
             controller: nationalIdController,
             labelText: 'Cédula',
             hintText: '123.456.789',
@@ -101,7 +101,7 @@ class NewUserWidget extends ConsumerWidget {
                 /// Monto facturado
             Expanded(
               flex: 2,
-              child: CustomTextInput(
+              child: CustomTextFormField(
               controller: amountController,
               labelText: 'Monto facturado',
               hintText: '10.00',
@@ -120,7 +120,7 @@ class NewUserWidget extends ConsumerWidget {
              const SizedBox(width: 14,),
             Expanded(
               flex: 2,
-              child: CustomTextInput(
+              child: CustomTextFormField(
               controller: billNumberController,
               labelText: 'Numero de factura',
               hintText: '0000',

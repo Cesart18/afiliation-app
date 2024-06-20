@@ -140,6 +140,7 @@ class NewUserWidget extends ConsumerWidget {
         
             /// Tipo de usuario
              FittedBox(child: CustomDrowdownButton(
+              label: '¿Es medico?',
               onSelected: ref.read(userFormInputProvider.notifier).onTypeUserChanged,
               initialSelection: userForm.isDoctor,
             )),

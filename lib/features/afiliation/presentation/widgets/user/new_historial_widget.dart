@@ -99,6 +99,14 @@ class NewHistorialWidget extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(width: 14,),
+            FittedBox(child: CustomDrowdownButton(
+              label: '¿Es medico?',
+              initialSelection: userForm.isDoctor,
+              onSelected: userFormNotifier.onTypeUserChanged,
+              enabled: isEnabled,
+              borderColor: isEnabled ? colors.error : null,
+            )),
               ],
             ),
             const SizedBox(height: 20,),
@@ -148,13 +156,14 @@ class NewHistorialWidget extends ConsumerWidget {
             const SizedBox(width: 14,),
         
             /// Tipo de usuario
-             FittedBox(child: CustomDrowdownButton(
+             
+            FittedBox(child: CustomDrowdownButton(
+              label: '¿Usó el cupon?',
               initialSelection: userForm.isDoctor,
               onSelected: userFormNotifier.onTypeUserChanged,
               enabled: isEnabled,
               borderColor: isEnabled ? colors.error : null,
             )),
-        
         
             const SizedBox(width: 14,),
             /// boton de continuar

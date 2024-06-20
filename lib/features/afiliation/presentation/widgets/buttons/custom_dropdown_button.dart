@@ -4,8 +4,15 @@ class CustomDrowdownButton extends StatelessWidget {
   final bool initialSelection;
   final bool? enabled;
   final Color? borderColor;
+  final String label;
   final Function(bool?)? onSelected;
-  const CustomDrowdownButton({super.key, this.onSelected, required this.initialSelection, this.enabled, this.borderColor});
+  const CustomDrowdownButton({
+    super.key,
+    required this.initialSelection,
+    required this.label,
+    this.onSelected,
+    this.enabled, this.borderColor,
+    });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +28,7 @@ class CustomDrowdownButton extends StatelessWidget {
           enabledBorder: border,
           focusedBorder: border,
           disabledBorder: border),
-        label: const Text('¿Es medico?'),
+        label: Text(label),
         initialSelection: initialSelection,
         enableSearch: false,
         onSelected: onSelected,

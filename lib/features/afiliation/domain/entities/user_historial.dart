@@ -16,7 +16,6 @@ class UserHistorial{
   @Backlink(to: 'historial')
   final user = IsarLink<User>();
 
-  // TODO: bloquear y agregar autenticacion
   // TODO: crear un modulo para cuando un cupon se usa
   // TODO: exportacion e importacion de la base datos 
   

@@ -1,6 +1,7 @@
 import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
+import 'package:afiliados_app/features/auth/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -32,7 +33,7 @@ class _TableBody extends ConsumerWidget {
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
     final sortState = ref.watch(sortUserProvider);
-
+    
     List<User> sortedUsers = List.from(users);
 
     switch (sortState.columnIndex) {
@@ -161,6 +162,7 @@ class _TableBody extends ConsumerWidget {
   }
 
   DataRow _customDataRow(User user, BuildContext context, WidgetRef ref) {
+    final authStatus = ref.watch(authProvider).authStatus;
     return DataRow(cells: [
       DataCell(
         Tooltip(
@@ -194,6 +196,7 @@ class _TableBody extends ConsumerWidget {
                   color: Colors.green,
                 )),
           ),
+          if( authStatus == AuthStatus.authenticated )
           Tooltip(
             message: 'Eliminar usuario',
             child: IconButton(

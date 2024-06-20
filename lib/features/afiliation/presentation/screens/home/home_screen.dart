@@ -1,5 +1,6 @@
 import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
+import 'package:afiliados_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +13,7 @@ class HomeScreen extends ConsumerWidget {
     
     final isDarkmode = ref.watch(appThemeProvider);
     final colors = Theme.of(context).colorScheme;
-
+    final authStatus = ref.watch(authProvider).authStatus;
     ref.listen(usersProvider, (previous, next) {
       if (next.errorMessage.isEmpty) return;
     Future.delayed(const Duration(milliseconds: 100));
@@ -28,13 +29,27 @@ class HomeScreen extends ConsumerWidget {
         shadowColor: colors.surface,
         surfaceTintColor: colors.surface,
         actions: [
-          /// auth screen
+          if( authStatus == AuthStatus.authenticated )
           Tooltip(
-            message: 'Autenticarse',
+            message: 'Cerrar sesion',
             child: IconButton(onPressed: (){
-              context.go('/auth');
-            }, icon: Icon(  Icons.lock ,
+              ref.read(authProvider.notifier).logout();
+            }, icon: Icon(  Icons.logout ,
             color: colors.onSurface,)),
+          ),
+          const SizedBox(width: 20,),
+          /// auth screen
+          Badge(
+            smallSize: 12,
+            backgroundColor: Colors.green,
+            isLabelVisible: ( authStatus == AuthStatus.authenticated ),
+            child: Tooltip(
+              message:  ( authStatus == AuthStatus.authenticated ) ? 'Autenticado' :'Autenticarse',
+              child: IconButton(onPressed: (){
+                context.go('/auth');
+              }, icon: Icon(  Icons.lock ,
+              color: colors.onSurface,)),
+            ),
           ),
           const SizedBox(width: 20,),
         /// Toggle theme icon

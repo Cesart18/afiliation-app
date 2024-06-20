@@ -23,12 +23,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
 
-  _setLoggedUser( UserAdmin userAdmin ){
+  _setLoggedUser( UserAdmin userAdmin ) async {
     state = state.copyWith(
       userAdmin: userAdmin,
       authStatus: AuthStatus.authenticated,
       errorMessage: ''
     );
+    await Future.delayed(const Duration(minutes: 5));
+    logout();
   }
 
   Future<void> logout([ String? errorMessage ]) async {

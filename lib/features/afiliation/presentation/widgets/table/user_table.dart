@@ -1,6 +1,7 @@
 import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
+import 'package:afiliados_app/features/auth/presentation/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,9 +15,8 @@ class UserTable extends ConsumerWidget {
     
     final size = MediaQuery.of(context).size;
     final colors = Theme.of(context).colorScheme;
-
     final sortState = ref.watch(sortHistorialProvider);
-
+    final authStatus = ref.watch(authProvider).authStatus;
     List<UserHistorial> sortedHistorial = List.from(historial ?? []);
 
     switch(sortState.columnIndex){
@@ -92,6 +92,7 @@ class UserTable extends ConsumerWidget {
                   'Numero de factura',
                   overflow: TextOverflow.ellipsis,
                 )),
+                if( authStatus == AuthStatus.authenticated )
                 const DataColumn(label:  Text('')),
                 
               ],
@@ -105,11 +106,13 @@ class UserTable extends ConsumerWidget {
 }
 
 DataRow _customDataRow(UserHistorial historial, BuildContext context, WidgetRef ref, int userId) {
+  final authStatus = ref.watch(authProvider).authStatus;
     return  DataRow(
       cells: [
       DataCell(Text(Formatters.formatDateTime(historial.date))),
       DataCell(Text('${historial.amount}\$')),
       DataCell(Text(historial.billNumber)),
+      if( authStatus == AuthStatus.authenticated )
       DataCell(Tooltip(
             message: 'Eliminar registro',
              child: IconButton(onPressed: (){

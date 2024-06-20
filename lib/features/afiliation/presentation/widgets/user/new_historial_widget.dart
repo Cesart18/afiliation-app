@@ -1,4 +1,5 @@
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
+import 'package:afiliados_app/features/auth/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +19,7 @@ class NewHistorialWidget extends ConsumerWidget {
     final nationalIdController = userForm.nationalIdController;
     final amountController = userForm.amountController;
     final billNumberController = userForm.billNumberController;
+    final authStatus = ref.watch(authProvider).authStatus;
     return Container(
 
       width: double.infinity,
@@ -164,7 +166,9 @@ class NewHistorialWidget extends ConsumerWidget {
                   userFormNotifier.onFormsumbit();
                 }),
               ),
+              if( authStatus == AuthStatus.authenticated )
             const SizedBox(width: 14,),
+              if( authStatus == AuthStatus.authenticated )
               Tooltip(
                 message: 'Editar usuario',
                 child: IconButton(

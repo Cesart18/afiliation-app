@@ -17,24 +17,51 @@ class NewHistorialDialog extends ConsumerWidget {
     final userFormNotifier = ref.read(newUserHistorialProvider(user).notifier);
     return AlertDialog(
       title: Text('Nuevo registro para ${userForm.firstName.value}'),
-      content: Expanded(
-            flex: 2,
-            child: CustomTextInput(
-            controller: userForm.amountController,
-            labelText: 'Monto facturado',
-            hintText: '10.00',
-            errorMessage: (userForm.isFormPosted && !userForm.editing) ? userForm.amount.errorMessage : null,
-            onChanged: (value) => userFormNotifier.onAmountChanged(double.tryParse(value) ?? 0.0),
-            onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
-            suffixIcon: userForm.amountController.value.text.isNotEmpty ? IconButton(onPressed: (){
-              userFormNotifier.clearAmount();
-            }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
-            textAlign: TextAlign.end,
-            inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
-            ],
-          ),
-          ),
+      content: SizedBox(
+        width: 350,
+        height: 100,
+        child: Row(
+          children: [
+            Expanded(
+                  flex: 2,
+                  child: CustomTextInput(
+                  controller: userForm.amountController,
+                  labelText: 'Monto facturado',
+                  hintText: '10.00',
+                  errorMessage: (userForm.isFormPosted && !userForm.editing) ? userForm.amount.errorMessage : null,
+                  onChanged: (value) => userFormNotifier.onAmountChanged(double.tryParse(value) ?? 0.0),
+                  onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
+                  suffixIcon: userForm.amountController.value.text.isNotEmpty ? IconButton(onPressed: (){
+                    userFormNotifier.clearAmount();
+                  }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
+                  textAlign: TextAlign.end,
+                  inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                  ],
+                ),
+                ),
+                const SizedBox(width: 14,),
+                Expanded(
+                flex: 2,
+                child: CustomTextInput(
+                controller: userForm.billNumberController,
+                labelText: 'Numero de factura',
+                hintText: '0000',
+                errorMessage: (userForm.isFormPosted && !userForm.editing) ? userForm.billNumber.errorMessage : null,
+                onChanged: (value) => userFormNotifier.onBillNumberChanged(int.tryParse(value) ?? 0),
+                onFieldSubmitted: (_) => userFormNotifier.onFormsumbit(),
+                suffixIcon: userForm.billNumberController.value.text.isNotEmpty ? IconButton(onPressed: (){
+                  userFormNotifier.clearBillNumber();
+                }, icon:  Icon(Icons.clear, size: 16 ,color: colors.error,)): null ,
+                textAlign: TextAlign.end,
+                inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9\.]')),
+                ],
+              ),
+              ),
+          ],
+        ),
+      ),
           actions: [
             ActionChip(
           label:  Text('Cancelar',style: TextStyle(color: colors.error),),

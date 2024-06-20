@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 
-final userFormInputProvider = StateNotifierProvider.autoDispose<
+final userFormInputProvider = StateNotifierProvider<
     UserFormInputNotifier, UserFormInputState>((ref) {
   final userNotifier = ref.watch(usersProvider.notifier);
   return UserFormInputNotifier(userNotifier: userNotifier);
@@ -75,10 +75,11 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
         nationalId: state.nationalId.value,
         amount: state.amount.value,
         isDoctor: state.isDoctor,
-        billNumber: state.billNumber.value
+        billNumber: state.billNumber.value,
+        callback: () => disposeAll()
         );
     state = state.copyWith(isPosting: false);
-    disposeAll();
+    
 
   }
 

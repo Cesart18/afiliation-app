@@ -75,9 +75,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     if( !state.editing ){
     if (state.amount.isNotValid || state.billNumber.isNotValid) return;
         final newHistorial = UserHistorial()..amount = state.amount.value..date = DateTime.now()..billNumber = '${state.billNumber.value}';
-      await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial);
-      clearAmount();
-      clearBillNumber();
+      await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial, () => clearInputs()); 
     }
 
     if( state.firstName.isNotValid && state.lastName.isNotValid && state.nationalId.isNotValid ) return;
@@ -115,6 +113,11 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
       state = state.copyWith(
         editing: !state.editing,
       );
+    }
+
+    clearInputs(){
+      clearBillNumber();
+      clearAmount();
     }
 
     clearFistName() {

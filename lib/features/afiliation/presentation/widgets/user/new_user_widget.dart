@@ -8,6 +8,7 @@ class NewUserWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+
     final colors = Theme.of(context).colorScheme;
     final userForm = ref.watch(userFormInputProvider);
     final userFormNotifier = ref.read(userFormInputProvider.notifier);
@@ -16,6 +17,7 @@ class NewUserWidget extends ConsumerWidget {
     final nationalIdController = userForm.nationalIdController;
     final amountController = userForm.amountController;
     final billNumberController = userForm.billNumberController;
+
     return Container(
 
       width: double.infinity,
@@ -92,7 +94,7 @@ class NewUserWidget extends ConsumerWidget {
               ],
             ),
         
-             const SizedBox(height: 30,),
+             const SizedBox(height: 20,),
             Row(
               children: [
         

@@ -19,13 +19,16 @@ class UsersNotifier extends StateNotifier<UsersState> {
       required int nationalId,
       required double amount,
       required bool isDoctor,
-      required int billNumber
-      }) async {
+      required int billNumber,
+      required Function() callback,
+      }
+      ) async {
 
     try {
         final newUser =      User()..firstName = firstName..lastName = lastName..nationalId = '$nationalId'..isDoctor = isDoctor;
             final newHistorial = UserHistorial()..amount = amount..date = DateTime.now()..billNumber = '$billNumber';
             await userRepository.addNewUser(newUser, newHistorial);
+      callback();
       _onDone();
     } on CustomError catch (e) {
       _onGetError(e.message);
@@ -46,10 +49,11 @@ class UsersNotifier extends StateNotifier<UsersState> {
     }
   }
   
-  Future<void> addNewHistorial( int userId, UserHistorial historial ) async {
+  Future<void> addNewHistorial( int userId, UserHistorial historial, Function() callback ) async {
     try {
       await userRepository.addNewHistorial(userId, historial);
       _onDone();
+      callback();
     } on CustomError catch (e) {
       _onGetError(e.message);
     }catch (e){

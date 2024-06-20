@@ -11,6 +11,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final isDarkmode = ref.watch(appThemeProvider);
+    final appRouter = ref.watch(appRouterProvider);
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Afiliation app',

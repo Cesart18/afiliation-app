@@ -1,16 +1,12 @@
+import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/auth/presentation/presentation.dart';
 import 'package:afiliados_app/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
-
-  void showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
 
 
   @override
@@ -20,11 +16,11 @@ class LoginScreen extends ConsumerWidget {
     final bool obscureText = ref.watch(loginFormProvider).obscureText;
     final size = MediaQuery.of(context).size;
     final titleLarge = Theme.of(context).textTheme.titleLarge;
-
+    final colors = Theme.of(context).colorScheme;
   ref.listen(authProvider, (previous, next){
     if( next.errorMessage.isEmpty ) return;
     Future.delayed(const Duration(milliseconds: 100));
-      showSnackbar(context, next.errorMessage);
+      Functions.showSnackbar(context, next.errorMessage);
   });
 
     return Scaffold(
@@ -39,7 +35,9 @@ class LoginScreen extends ConsumerWidget {
             minHeight: 300,
             minWidth: 300
           ),
-          decoration: boxDecoration(),
+          decoration: BoxDecoration(
+          border: Border.all(color: colors.onSurface),
+          borderRadius: BorderRadius.circular(4)),
           child: Column(mainAxisAlignment: MainAxisAlignment.center,
           // TITULO
             children: [
@@ -71,20 +69,21 @@ class LoginScreen extends ConsumerWidget {
                   ref.read(loginFormProvider.notifier).showPassword();
                 }, icon:  Icon( obscureText? Icons.visibility : Icons.visibility_off)),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 40,),
               // BUTTON
               CustomAuthButton(text: 'Ingresar', onPressed: (){
                 loginFormRead.onFormSubmit();
-              })
+              }),
+              const SizedBox(height: 40,),
+              CustomAuthButton(
+                text: 'Cancelar', onPressed: (){
+                context.push('/');
+              },
+              bgColor: colors.error,)
             ],
           ),
         ),
       ),
     );
   }
-
-  BoxDecoration boxDecoration() => BoxDecoration(
-    border: Border.all(),
-    borderRadius: BorderRadius.circular(4)
-  );
 }

@@ -2,6 +2,7 @@ import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -27,7 +28,15 @@ class HomeScreen extends ConsumerWidget {
         shadowColor: colors.surface,
         surfaceTintColor: colors.surface,
         actions: [
-
+          /// auth screen
+          Tooltip(
+            message: 'Autenticarse',
+            child: IconButton(onPressed: (){
+              context.go('/auth');
+            }, icon: Icon(  Icons.lock ,
+            color: colors.onSurface,)),
+          ),
+          const SizedBox(width: 20,),
         /// Toggle theme icon
           Tooltip(
             message: 'Cambiar tema',

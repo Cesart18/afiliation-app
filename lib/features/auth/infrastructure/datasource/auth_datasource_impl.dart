@@ -17,7 +17,7 @@ class AuthDatasourceImpl implements AuthDatasource{
   _defaultUser() async {
     final isar = await db;
     final userAdmin = UserAdmin()
-    ..userName = 'Admin'
+    ..userName = 'admin'
     ..password = 'admin123';
     
     final userIsAdded = await isar.writeTxn(() async {
@@ -40,11 +40,10 @@ class AuthDatasourceImpl implements AuthDatasource{
         .passwordEqualTo(password);
       final getUser = await query.findFirst();
       return Future.value(getUser);
-    } on IsarError catch (e) {
-      print(e.message);
+    } on IsarError catch (_) {
       throw CustomError(message: 'Credenciales invalidas');
     } catch (e){
-      throw Exception();
+      throw CustomError(message: 'Credenciales invalidas');
     }
 
   }

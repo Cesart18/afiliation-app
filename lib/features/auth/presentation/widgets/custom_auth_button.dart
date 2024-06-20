@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CustomAuthButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
-  const CustomAuthButton({super.key, required this.text, required this.onPressed});
+  final Color? bgColor;
+  const CustomAuthButton({super.key, required this.text, required this.onPressed, this.bgColor});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +16,11 @@ class CustomAuthButton extends StatelessWidget {
         fixedSize: const Size(200, 40),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
-          side: const BorderSide(
-            color: Colors.black
+          side:  BorderSide(
+            color: colors.surface
           ),
         ),
-        backgroundColor: colors.onSurface
+        backgroundColor: bgColor ?? colors.onSurface
       ), child: Text(text,
       style: TextStyle(color: colors.surface),),);
   }

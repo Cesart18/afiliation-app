@@ -1,5 +1,6 @@
 //* router
 export 'router/app_router.dart';
+export 'router/app_router_notifier.dart';
 
 //* theme
 export 'theme/app_theme.dart';

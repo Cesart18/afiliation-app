@@ -1,15 +1,10 @@
+import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
-
-  void showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message), duration: const Duration(seconds: 2) ));
-  }
 
   @override
   Widget build(BuildContext context, ref) {
@@ -20,7 +15,7 @@ class HomeScreen extends ConsumerWidget {
     ref.listen(usersProvider, (previous, next) {
       if (next.errorMessage.isEmpty) return;
     Future.delayed(const Duration(milliseconds: 100));
-      showSnackbar(context, next.errorMessage);
+      Functions.showSnackbar(context, next.errorMessage);
     });
 
     return Scaffold(

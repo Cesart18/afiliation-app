@@ -7,11 +7,7 @@ class UserScreen extends ConsumerWidget {
   final String id;
   const UserScreen({super.key, required this.id});
 
-  void showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
-  }
+  
 
   @override
   Widget build(BuildContext context, ref) {
@@ -22,7 +18,7 @@ class UserScreen extends ConsumerWidget {
     ref.listen(usersProvider, (previous, next) {
       if (next.errorMessage.isEmpty) return;
     Future.delayed(const Duration(milliseconds: 100));
-      showSnackbar(context, next.errorMessage);
+      Functions.showSnackbar(context, next.errorMessage);
     });
 
     return PopScope(

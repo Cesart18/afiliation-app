@@ -19,12 +19,14 @@ export 'providers/search_delegate/search_delegate_provider.dart';
 // sort
 export 'providers/sort/sort_user_provider.dart';
 export 'providers/sort/sort_historial_provider.dart';
+// streams
+export 'providers/users/streams_providers.dart';
 
 
 //* widgets
 //  user
-export 'widgets/user/new_afiliation_widget.dart';
-export 'widgets/user/new_registry_widget.dart';
+export 'widgets/user/new_user_widget.dart';
+export 'widgets/user/new_historial_widget.dart';
 //  inputs
 export 'widgets/inputs/custom_text_input.dart';
 // buttons

@@ -12,6 +12,11 @@ class SearchDelegateNotifier extends StateNotifier<SearchDelegateState> {
       query: value.trim().toLowerCase()
     );
   }
+  clearInput(){
+    state = state.copyWith(
+      query: ''
+    );
+  }
   
 }
 

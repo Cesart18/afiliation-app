@@ -18,17 +18,29 @@ class UserTable extends ConsumerWidget {
     final sortState = ref.watch(sortHistorialProvider);
 
     List<UserHistorial> sortedHistorial = List.from(historial ?? []);
-    if (sortState.columnIndex == 0) {
-      // Ordenar por fecha
+
+    switch(sortState.columnIndex){
+      case 1: 
       sortedHistorial.sort((a, b) => sortState.ascending
           ? a.date.compareTo(b.date)
           : b.date.compareTo(a.date));
-    } else if (sortState.columnIndex == 1) {
-      // Ordenar por monto
+      break;
+      case 2:
       sortedHistorial.sort((a, b) => sortState.ascending
           ? a.amount.compareTo(b.amount)
           : b.amount.compareTo(a.amount));
+      break;
+      case 3:
+      sortedHistorial.sort(( a, b ) {
+        final billAasInt = int.tryParse(a.billNumber) ?? 0;
+        final billBasInt = int.tryParse(b.billNumber) ?? 0;
+        return sortState.ascending
+        ? billAasInt.compareTo(billBasInt)
+        : billBasInt.compareTo(billBasInt);
+      });
     }
+
+    
 
 
     return Expanded(
@@ -71,6 +83,15 @@ class UserTable extends ConsumerWidget {
                   'Monto',
                   overflow: TextOverflow.ellipsis,
                 )),
+                DataColumn(
+                  tooltip: 'Ordernar numero de factura',
+                  onSort: (columnIndex, ascending) {
+                    ref.read(sortHistorialProvider.notifier).sort(columnIndex);
+                  },
+                    label: const Text(
+                  'Numero de factura',
+                  overflow: TextOverflow.ellipsis,
+                )),
                 const DataColumn(label:  Text('')),
                 
               ],
@@ -88,6 +109,7 @@ DataRow _customDataRow(UserHistorial historial, BuildContext context, WidgetRef 
       cells: [
       DataCell(Text(Formatters.formatDateTime(historial.date))),
       DataCell(Text('${historial.amount}\$')),
+      DataCell(Text(historial.billNumber)),
       DataCell(Tooltip(
             message: 'Eliminar registro',
              child: IconButton(onPressed: (){

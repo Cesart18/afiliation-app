@@ -1,16 +1,8 @@
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
+import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-  final usersStreamProvider = StreamProvider<List<User>>((ref) async* {
-    final query = ref.watch(searchDelegateProvider).query;
-    final users = ref.watch(userRepositoryProvider).getUsers(query);
-    await for ( final user in users ){
-      yield user;
-    }
-
-  });
 
 final usersProvider = StateNotifierProvider<UsersNotifier,UsersState>((ref) {
   final userRepository = ref.watch(userRepositoryProvider);
@@ -26,28 +18,76 @@ class UsersNotifier extends StateNotifier<UsersState> {
       required String lastName,
       required int nationalId,
       required double amount,
-      required bool isDoctor}) async {
-    final newUser =      User()..firstName = firstName..lastName = lastName..nationalId = '$nationalId'..isDoctor = isDoctor;
-    final newHistorial = UserHistorial(date: DateTime.now(), amount: amount);
-    await userRepository.addNewUser(newUser, newHistorial);
+      required bool isDoctor,
+      required int billNumber
+      }) async {
+
+    try {
+        final newUser =      User()..firstName = firstName..lastName = lastName..nationalId = '$nationalId'..isDoctor = isDoctor;
+            final newHistorial = UserHistorial()..amount = amount..date = DateTime.now()..billNumber = '$billNumber';
+            await userRepository.addNewUser(newUser, newHistorial);
+      _onDone();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }catch (e){
+      _onGetError( 'Error no controlado' );
+    }
+    
   }
 
   Future<void> deleteUser( int userId ) async {
-    await userRepository.deleteUser(userId);
+    try {
+      await userRepository.deleteUser(userId);
+      _onDone();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }catch (e){
+      _onGetError( 'Error no controlado' );
+    }
   }
   
   Future<void> addNewHistorial( int userId, UserHistorial historial ) async {
-    await userRepository.addNewHistorial(userId, historial);
+    try {
+      await userRepository.addNewHistorial(userId, historial);
+      _onDone();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }catch (e){
+      _onGetError( 'Error no controlado' );
+    }
   }
 
   Future<void> updateUser( User user ) async {
-    await userRepository.updateUser(user);
+    try {
+      await userRepository.updateUser(user);
+      _onDone();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }catch (e){
+      _onGetError( 'Error no controlado' );
+    }
   }
 
   Future<void> deleteHistorial( int userId, int historialId ) async {
-    await userRepository.deleteHistorial(userId, historialId);
+    try {
+      await userRepository.deleteHistorial(userId, historialId);
+      _onDone();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }catch (e){
+      _onGetError( 'Error no controlado' );
+    }
   }
-
+  _onGetError([String value = '' ]){
+    state = state.copyWith(
+      errorMessage: value
+    );
+  }
+  _onDone(){
+    state = state.copyWith(
+      errorMessage: ''
+    );
+  }
 }
 
 class UsersState {

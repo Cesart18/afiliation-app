@@ -2,7 +2,7 @@
 
 import 'package:formz/formz.dart';
 
-enum AmountError { format }
+enum AmountError { empty, minValue }
 
 class Amount extends FormzInput<double, AmountError>{
 
@@ -13,7 +13,8 @@ class Amount extends FormzInput<double, AmountError>{
   String? get errorMessage{
     if( isValid || isPure ) return null;
 
-    if ( displayError == AmountError.format ) return 'Monto es requerido';
+    if ( displayError == AmountError.empty ) return 'Monto es requerido';
+    if ( displayError == AmountError.minValue ) return 'Monto minimo 5\$';
 
     return null;
   }
@@ -21,7 +22,8 @@ class Amount extends FormzInput<double, AmountError>{
 
   @override
   AmountError? validator(double value) {
-    if ( value <= 0 ) return AmountError.format;
+    if ( value <= 0 ) return AmountError.empty;
+    if ( value < 5 ) return AmountError.minValue;
     return null;
   }
 

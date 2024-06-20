@@ -22,8 +22,13 @@ const UserHistorialSchema = CollectionSchema(
       name: r'amount',
       type: IsarType.double,
     ),
-    r'date': PropertySchema(
+    r'billNumber': PropertySchema(
       id: 1,
+      name: r'billNumber',
+      type: IsarType.string,
+    ),
+    r'date': PropertySchema(
+      id: 2,
       name: r'date',
       type: IsarType.dateTime,
     )
@@ -33,7 +38,21 @@ const UserHistorialSchema = CollectionSchema(
   deserialize: _userHistorialDeserialize,
   deserializeProp: _userHistorialDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'billNumber': IndexSchema(
+      id: 1059943391792785230,
+      name: r'billNumber',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'billNumber',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {
     r'user': LinkSchema(
       id: 9096105637217062385,
@@ -56,6 +75,7 @@ int _userHistorialEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.billNumber.length * 3;
   return bytesCount;
 }
 
@@ -66,7 +86,8 @@ void _userHistorialSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.amount);
-  writer.writeDateTime(offsets[1], object.date);
+  writer.writeString(offsets[1], object.billNumber);
+  writer.writeDateTime(offsets[2], object.date);
 }
 
 UserHistorial _userHistorialDeserialize(
@@ -75,10 +96,10 @@ UserHistorial _userHistorialDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = UserHistorial(
-    amount: reader.readDouble(offsets[0]),
-    date: reader.readDateTime(offsets[1]),
-  );
+  final object = UserHistorial();
+  object.amount = reader.readDouble(offsets[0]);
+  object.billNumber = reader.readString(offsets[1]);
+  object.date = reader.readDateTime(offsets[2]);
   object.id = id;
   return object;
 }
@@ -93,6 +114,8 @@ P _userHistorialDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
+      return (reader.readString(offset)) as P;
+    case 2:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -111,6 +134,62 @@ void _userHistorialAttach(
     IsarCollection<dynamic> col, Id id, UserHistorial object) {
   object.id = id;
   object.user.attach(col, col.isar.collection<User>(), r'user', id);
+}
+
+extension UserHistorialByIndex on IsarCollection<UserHistorial> {
+  Future<UserHistorial?> getByBillNumber(String billNumber) {
+    return getByIndex(r'billNumber', [billNumber]);
+  }
+
+  UserHistorial? getByBillNumberSync(String billNumber) {
+    return getByIndexSync(r'billNumber', [billNumber]);
+  }
+
+  Future<bool> deleteByBillNumber(String billNumber) {
+    return deleteByIndex(r'billNumber', [billNumber]);
+  }
+
+  bool deleteByBillNumberSync(String billNumber) {
+    return deleteByIndexSync(r'billNumber', [billNumber]);
+  }
+
+  Future<List<UserHistorial?>> getAllByBillNumber(
+      List<String> billNumberValues) {
+    final values = billNumberValues.map((e) => [e]).toList();
+    return getAllByIndex(r'billNumber', values);
+  }
+
+  List<UserHistorial?> getAllByBillNumberSync(List<String> billNumberValues) {
+    final values = billNumberValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'billNumber', values);
+  }
+
+  Future<int> deleteAllByBillNumber(List<String> billNumberValues) {
+    final values = billNumberValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'billNumber', values);
+  }
+
+  int deleteAllByBillNumberSync(List<String> billNumberValues) {
+    final values = billNumberValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'billNumber', values);
+  }
+
+  Future<Id> putByBillNumber(UserHistorial object) {
+    return putByIndex(r'billNumber', object);
+  }
+
+  Id putByBillNumberSync(UserHistorial object, {bool saveLinks = true}) {
+    return putByIndexSync(r'billNumber', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByBillNumber(List<UserHistorial> objects) {
+    return putAllByIndex(r'billNumber', objects);
+  }
+
+  List<Id> putAllByBillNumberSync(List<UserHistorial> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'billNumber', objects, saveLinks: saveLinks);
+  }
 }
 
 extension UserHistorialQueryWhereSort
@@ -192,6 +271,51 @@ extension UserHistorialQueryWhere
       ));
     });
   }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
+      billNumberEqualTo(String billNumber) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'billNumber',
+        value: [billNumber],
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
+      billNumberNotEqualTo(String billNumber) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'billNumber',
+              lower: [],
+              upper: [billNumber],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'billNumber',
+              lower: [billNumber],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'billNumber',
+              lower: [billNumber],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'billNumber',
+              lower: [],
+              upper: [billNumber],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
 }
 
 extension UserHistorialQueryFilter
@@ -258,6 +382,142 @@ extension UserHistorialQueryFilter
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'billNumber',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'billNumber',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'billNumber',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'billNumber',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'billNumber',
+        value: '',
       ));
     });
   }
@@ -423,6 +683,19 @@ extension UserHistorialQuerySortBy
     });
   }
 
+  QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy> sortByBillNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'billNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy>
+      sortByBillNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'billNumber', Sort.desc);
+    });
+  }
+
   QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy> sortByDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'date', Sort.asc);
@@ -447,6 +720,19 @@ extension UserHistorialQuerySortThenBy
   QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy> thenByAmountDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'amount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy> thenByBillNumber() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'billNumber', Sort.asc);
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterSortBy>
+      thenByBillNumberDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'billNumber', Sort.desc);
     });
   }
 
@@ -483,6 +769,13 @@ extension UserHistorialQueryWhereDistinct
     });
   }
 
+  QueryBuilder<UserHistorial, UserHistorial, QDistinct> distinctByBillNumber(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'billNumber', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<UserHistorial, UserHistorial, QDistinct> distinctByDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'date');
@@ -501,6 +794,12 @@ extension UserHistorialQueryProperty
   QueryBuilder<UserHistorial, double, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
+    });
+  }
+
+  QueryBuilder<UserHistorial, String, QQueryOperations> billNumberProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'billNumber');
     });
   }
 

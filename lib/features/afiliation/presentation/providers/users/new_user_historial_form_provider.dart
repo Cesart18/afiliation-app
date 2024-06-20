@@ -19,7 +19,8 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
         firstNameController: TextEditingController(text: Formatters.firstLetterToUpper(user?.firstName ?? 'No hay')),
         lastNameController: TextEditingController(text: Formatters.firstLetterToUpper(user?.lastName ?? 'No hay')),
         nationalIdController: TextEditingController(text: user?.nationalId.toString()),
-        amountController: TextEditingController()
+        amountController: TextEditingController(),
+        billNumberController: TextEditingController(),
       )){
         _initValues();
       }
@@ -29,7 +30,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     state = state.copyWith(
         firstName: newFirstName,
         isValid: Formz.validate(
-            [newFirstName, state.lastName, state.amount, state.nationalId]));
+            [newFirstName, state.lastName, state.amount, state.nationalId, state.billNumber]));
   }
 
   void onLastNameChanged(String value) {
@@ -37,7 +38,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     state = state.copyWith(
         lastName: newLastName,
         isValid: Formz.validate(
-            [newLastName, state.firstName, state.amount, state.nationalId]));
+            [newLastName, state.firstName, state.amount, state.nationalId, state.billNumber]));
   }
 
   void onNationalIdChanged(int value) {
@@ -45,7 +46,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     state = state.copyWith(
         nationalId: newNationalId,
         isValid: Formz.validate(
-            [newNationalId, state.firstName, state.amount, state.lastName]));
+            [newNationalId, state.firstName, state.amount, state.lastName, state.billNumber]));
   }
 
   void onAmountChanged(double value) {
@@ -53,7 +54,14 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     state = state.copyWith(
         amount: newAmount,
         isValid: Formz.validate(
-            [newAmount, state.firstName, state.lastName, state.nationalId]));
+            [newAmount, state.firstName, state.lastName, state.nationalId, state.billNumber]));
+  }
+  void onBillNumberChanged(int value) {
+    final newBillNumber = BillNumber.dirty(value);
+    state = state.copyWith(
+        billNumber: newBillNumber,
+        isValid: Formz.validate(
+            [newBillNumber, state.firstName, state.lastName, state.nationalId, state.amount]));
   }
 
   void onTypeUserChanged(bool? value) {
@@ -64,13 +72,14 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     _touchedEveryField();
 
     state = state.copyWith(isPosting: true);
-
     if( !state.editing ){
-    if (state.amount.isNotValid ) return;
-      final newHistorial = UserHistorial(date: DateTime.now(), amount: state.amount.value);
+    if (state.amount.isNotValid || state.billNumber.isNotValid) return;
+        final newHistorial = UserHistorial()..amount = state.amount.value..date = DateTime.now()..billNumber = '${state.billNumber.value}';
       await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial);
       clearAmount();
+      clearBillNumber();
     }
+
     if( state.firstName.isNotValid && state.lastName.isNotValid && state.nationalId.isNotValid ) return;
 
     final updatedUser = user
@@ -90,14 +99,16 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     final lastName = LastName.dirty(state.lastName.value);
     final nationalId = NationalId.dirty(state.nationalId.value);
     final amount = Amount.dirty(state.amount.value);
+    final billNumber = BillNumber.dirty(state.billNumber.value);
 
     state = state.copyWith(
         firstName: firstName,
         lastName: lastName,
         nationalId: nationalId,
         amount: amount,
+        billNumber: billNumber,
         isFormPosted: true,
-        isValid: Formz.validate([firstName, lastName, amount, nationalId]));
+        isValid: Formz.validate([firstName, lastName, amount, nationalId, billNumber]));
   }
 
     toggleEdit(){
@@ -125,6 +136,10 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     state = state.copyWith(amount: const Amount.pure());
     state.amountController.clear();
   }
+  clearBillNumber() {
+    state = state.copyWith(billNumber: const BillNumber.pure());
+    state.billNumberController.clear();
+  }
   
     _initValues(){
       state = state.copyWith(
@@ -141,6 +156,7 @@ class NewUserHistorialState {
   final LastName lastName;
   final NationalId nationalId;
   final Amount amount;
+  final BillNumber billNumber;
   final bool isDoctor;
   final bool isValid;
   final bool isFormPosted;
@@ -150,12 +166,14 @@ class NewUserHistorialState {
   final TextEditingController lastNameController;
   final TextEditingController nationalIdController;
   final TextEditingController amountController;
+  final TextEditingController billNumberController;
 
   NewUserHistorialState({
     this.firstName = const FirstName.pure(),
     this.lastName = const LastName.pure(),
     this.nationalId = const NationalId.pure(),
     this.amount = const Amount.pure(),
+    this.billNumber = const BillNumber.pure(),
     this.isDoctor = false,
     this.isValid = false,
     this.isFormPosted = false,
@@ -165,6 +183,7 @@ class NewUserHistorialState {
     required this.lastNameController,
     required this.nationalIdController,
     required this.amountController,
+    required this.billNumberController,
   });
 
   NewUserHistorialState copyWith({
@@ -172,6 +191,7 @@ class NewUserHistorialState {
     LastName? lastName,
     NationalId? nationalId,
     Amount? amount,
+    BillNumber? billNumber,
     bool? isDoctor,
     bool? isValid,
     bool? isFormPosted,
@@ -181,12 +201,14 @@ class NewUserHistorialState {
     TextEditingController? lastNameController,
     TextEditingController? nationalIdController,
     TextEditingController? amountController,
+    TextEditingController? billNumberController,
   }) =>
       NewUserHistorialState(
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         nationalId: nationalId ?? this.nationalId,
         amount: amount ?? this.amount,
+        billNumber: billNumber ?? this.billNumber,
         isDoctor: isDoctor ?? this.isDoctor,
         isValid: isValid ?? this.isValid,
         isFormPosted: isFormPosted ?? this.isFormPosted,
@@ -196,5 +218,6 @@ class NewUserHistorialState {
         lastNameController: lastNameController ?? this.lastNameController,
         nationalIdController: nationalIdController ?? this.nationalIdController,
         amountController: amountController ?? this.amountController,
+        billNumberController: billNumberController ?? this.billNumberController,
       );
 }

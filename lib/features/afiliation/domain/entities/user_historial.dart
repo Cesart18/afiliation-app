@@ -8,12 +8,16 @@ part 'user_historial.g.dart';
 class UserHistorial{
 
   Id? id;
-  final DateTime date;
-  final double amount;
+  late DateTime date;
+  late double amount;
+  @Index(unique: true)
+  late String billNumber;
 
   @Backlink(to: 'historial')
   final user = IsarLink<User>();
 
-  UserHistorial({required this.date, required this.amount});
-
+  // TODO: bloquear y agregar autenticacion
+  // TODO: crear un modulo para cuando un cupon se usa
+  // TODO: exportacion e importacion de la base datos 
+  
 }

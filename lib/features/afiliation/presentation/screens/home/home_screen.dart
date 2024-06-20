@@ -5,11 +5,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message), duration: const Duration(seconds: 2) ));
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     
     final isDarkmode = ref.watch(appThemeProvider);
     final colors = Theme.of(context).colorScheme;
+
+    ref.listen(usersProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+    Future.delayed(const Duration(milliseconds: 100));
+      showSnackbar(context, next.errorMessage);
+    });
+
     return Scaffold(
 
       /// Appbar
@@ -39,7 +52,7 @@ class HomeScreen extends ConsumerWidget {
           
               SizedBox(height: 50,),       
               /// new afiliation
-              NewAfiliationWidget(),
+              NewUserWidget(),
           
               SizedBox(height: 50,),
               /// search input       

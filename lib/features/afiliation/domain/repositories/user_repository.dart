@@ -12,5 +12,6 @@ abstract class UserRepository {
   Future<void> addNewHistorial( int userId , UserHistorial historial );
   Future<void> deleteHistorial( int userId, int historialId );
   Stream<List<User>> getUsers([ String query = '' ]);
+  Stream<List<UserHistorial>> getHistorial( int userId, [ String query = '' ]);
 
 } 

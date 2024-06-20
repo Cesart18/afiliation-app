@@ -167,6 +167,7 @@ class _TableBody extends ConsumerWidget {
           message: 'Registro del usuario',
           child: IconButton(
               onPressed: () {
+                ref.read(searchDelegateProvider.notifier).clearInput();
                 context.push('/user/${user.id}');
               },
               icon: const Icon(

@@ -17,14 +17,16 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
             firstNameController: TextEditingController(),
             lastNameController: TextEditingController(),
             nationalIdController: TextEditingController(),
-            amountController: TextEditingController()));
+            amountController: TextEditingController(),
+            billNumberController: TextEditingController()
+            ));
 
   void onFirstNameChanged(String value) {
     final newFirstName = FirstName.dirty(value);
     state = state.copyWith(
         firstName: newFirstName,
         isValid: Formz.validate(
-            [newFirstName, state.lastName, state.amount, state.nationalId]));
+            [newFirstName, state.lastName, state.amount, state.nationalId, state.billNumber]));
   }
 
   void onLastNameChanged(String value) {
@@ -32,7 +34,7 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(
         lastName: newLastName,
         isValid: Formz.validate(
-            [newLastName, state.firstName, state.amount, state.nationalId]));
+            [newLastName, state.firstName, state.amount, state.nationalId, state.billNumber]));
   }
 
   void onNationalIdChanged(int value) {
@@ -40,7 +42,7 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(
         nationalId: newNationalId,
         isValid: Formz.validate(
-            [newNationalId, state.firstName, state.amount, state.lastName]));
+            [newNationalId, state.firstName, state.amount, state.lastName, state.billNumber]));
   }
 
   void onAmountChanged(double value) {
@@ -48,7 +50,14 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(
         amount: newAmount,
         isValid: Formz.validate(
-            [newAmount, state.firstName, state.lastName, state.nationalId]));
+            [newAmount, state.firstName, state.lastName, state.nationalId, state.billNumber]));
+  }
+  void onBillNumberChanged(int value) {
+    final newBillNumber = BillNumber.dirty(value);
+    state = state.copyWith(
+        billNumber: newBillNumber,
+        isValid: Formz.validate(
+            [newBillNumber, state.firstName, state.lastName, state.nationalId, state.amount]));
   }
 
   void onTypeUserChanged(bool? value) {
@@ -65,7 +74,9 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
         lastName: state.lastName.value.trim().toLowerCase(),
         nationalId: state.nationalId.value,
         amount: state.amount.value,
-        isDoctor: state.isDoctor);
+        isDoctor: state.isDoctor,
+        billNumber: state.billNumber.value
+        );
     state = state.copyWith(isPosting: false);
     disposeAll();
 
@@ -76,14 +87,16 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     final lastName = LastName.dirty(state.lastName.value);
     final nationalId = NationalId.dirty(state.nationalId.value);
     final amount = Amount.dirty(state.amount.value);
+    final billNumber = BillNumber.dirty(state.billNumber.value);
 
     state = state.copyWith(
         firstName: firstName,
         lastName: lastName,
         nationalId: nationalId,
         amount: amount,
+        billNumber: billNumber,
         isFormPosted: true,
-        isValid: Formz.validate([firstName, lastName, amount, nationalId]));
+        isValid: Formz.validate([firstName, lastName, amount, nationalId, billNumber]));
   }
 
   void disposeAll() {
@@ -97,6 +110,7 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     clearLastName();
     clearNationalId();
     clearAmount();
+    clearBillNumber();
   }
 
   clearFistName() {
@@ -118,6 +132,10 @@ class UserFormInputNotifier extends StateNotifier<UserFormInputState> {
     state = state.copyWith(amount: const Amount.pure());
     state.amountController.clear();
   }
+  clearBillNumber() {
+    state = state.copyWith(billNumber: const BillNumber.pure());
+    state.billNumberController.clear();
+  }
 }
 
 
@@ -126,6 +144,7 @@ class UserFormInputState {
   final LastName lastName;
   final NationalId nationalId;
   final Amount amount;
+  final BillNumber billNumber;
   final bool isDoctor;
   final bool isValid;
   final bool isFormPosted;
@@ -134,12 +153,14 @@ class UserFormInputState {
   final TextEditingController lastNameController;
   final TextEditingController nationalIdController;
   final TextEditingController amountController;
+  final TextEditingController billNumberController;
 
   UserFormInputState({
     this.firstName = const FirstName.pure(),
     this.lastName = const LastName.pure(),
     this.nationalId = const NationalId.pure(),
     this.amount = const Amount.pure(),
+    this.billNumber = const BillNumber.pure(),
     this.isDoctor = false,
     this.isValid = false,
     this.isFormPosted = false,
@@ -148,6 +169,7 @@ class UserFormInputState {
     required this.lastNameController,
     required this.nationalIdController,
     required this.amountController,
+    required this.billNumberController
   });
 
   UserFormInputState copyWith({
@@ -155,6 +177,7 @@ class UserFormInputState {
     LastName? lastName,
     NationalId? nationalId,
     Amount? amount,
+    BillNumber? billNumber,
     bool? isDoctor,
     bool? isValid,
     bool? isFormPosted,
@@ -163,12 +186,14 @@ class UserFormInputState {
     TextEditingController? firstNameController,
     TextEditingController? amountController,
     TextEditingController? nationalIdController,
+    TextEditingController? billNumberController,
   }) =>
       UserFormInputState(
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         nationalId: nationalId ?? this.nationalId,
         amount: amount ?? this.amount,
+        billNumber: billNumber ?? this.billNumber,
         isDoctor: isDoctor ?? this.isDoctor,
         isValid: isValid ?? this.isValid,
         isFormPosted: isFormPosted ?? this.isFormPosted,
@@ -177,5 +202,6 @@ class UserFormInputState {
         firstNameController: firstNameController ?? this.firstNameController,
         nationalIdController: nationalIdController ?? this.nationalIdController,
         amountController: amountController ?? this.amountController,
+        billNumberController: billNumberController ?? this.billNumberController,
       );
 }

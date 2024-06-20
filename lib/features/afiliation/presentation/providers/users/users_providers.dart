@@ -49,8 +49,9 @@ class UsersNotifier extends StateNotifier<UsersState> {
     }
   }
   
-  Future<void> addNewHistorial( int userId, UserHistorial historial, Function() callback ) async {
+  Future<void> addNewHistorial( int userId, UserHistorial historial, Function() callback, { required bool isCuponUsed } ) async {
     try {
+      if( isCuponUsed ) await userRepository.deleteAllHistorial(userId);
       await userRepository.addNewHistorial(userId, historial);
       _onDone();
       callback();

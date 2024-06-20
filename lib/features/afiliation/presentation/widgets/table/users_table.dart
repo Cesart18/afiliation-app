@@ -1,5 +1,4 @@
 import 'package:afiliados_app/config/config.dart';
-import 'package:afiliados_app/config/utils/functions.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:afiliados_app/features/auth/presentation/presentation.dart';

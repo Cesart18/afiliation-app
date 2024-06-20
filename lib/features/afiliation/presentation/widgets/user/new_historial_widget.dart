@@ -159,8 +159,8 @@ class NewHistorialWidget extends ConsumerWidget {
              
             FittedBox(child: CustomDrowdownButton(
               label: '¿Usó el cupon?',
-              initialSelection: false,
-              // onSelected: userFormNotifier.onTypeUserChanged,
+              initialSelection: userForm.isCouponUsed,
+              onSelected: userFormNotifier.onIsCouponUsedChanged,
               enabled: !isEnabled,
               borderColor: colors.onSurface,
             )),

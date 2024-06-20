@@ -67,6 +67,9 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
   void onTypeUserChanged(bool? value) {
     state = state.copyWith(isDoctor: value);
   }
+  void onIsCouponUsedChanged(bool? value) {
+    state = state.copyWith(isCouponUsed: value);
+  }
 
     void onFormsumbit() async {
     _touchedEveryField();
@@ -75,7 +78,7 @@ class NewUserHistorialNotifier extends StateNotifier<NewUserHistorialState> {
     if( !state.editing ){
     if (state.amount.isNotValid || state.billNumber.isNotValid) return;
         final newHistorial = UserHistorial()..amount = state.amount.value..date = DateTime.now()..billNumber = '${state.billNumber.value}';
-      await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial, () => clearInputs()); 
+      await userNotifier.addNewHistorial(user?.id ?? 0, newHistorial, () => clearInputs(), isCuponUsed: state.isCouponUsed); 
     }
 
     if( state.firstName.isNotValid && state.lastName.isNotValid && state.nationalId.isNotValid ) return;
@@ -165,6 +168,7 @@ class NewUserHistorialState {
   final bool isFormPosted;
   final bool isPosting;
   final bool editing;
+  final bool isCouponUsed;
   final TextEditingController firstNameController;
   final TextEditingController lastNameController;
   final TextEditingController nationalIdController;
@@ -182,6 +186,7 @@ class NewUserHistorialState {
     this.isFormPosted = false,
     this.isPosting = false,
     this.editing = false,
+    this.isCouponUsed = false,
     required this.firstNameController,
     required this.lastNameController,
     required this.nationalIdController,
@@ -200,6 +205,7 @@ class NewUserHistorialState {
     bool? isFormPosted,
     bool? isPosting,
     bool? editing,
+    bool? isCouponUsed,
     TextEditingController? firstNameController,
     TextEditingController? lastNameController,
     TextEditingController? nationalIdController,
@@ -217,6 +223,7 @@ class NewUserHistorialState {
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isPosting: isPosting ?? this.isPosting,
         editing: editing ?? this.editing,
+        isCouponUsed: isCouponUsed ?? this.isCouponUsed,
         firstNameController: firstNameController ?? this.firstNameController,
         lastNameController: lastNameController ?? this.lastNameController,
         nationalIdController: nationalIdController ?? this.nationalIdController,

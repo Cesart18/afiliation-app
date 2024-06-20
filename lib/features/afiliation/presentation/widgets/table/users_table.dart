@@ -1,4 +1,5 @@
 import 'package:afiliados_app/config/config.dart';
+import 'package:afiliados_app/config/utils/functions.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/presentation/presentation.dart';
 import 'package:afiliados_app/features/auth/presentation/presentation.dart';
@@ -182,7 +183,7 @@ class _TableBody extends ConsumerWidget {
       DataCell(Text(Formatters.formatNationalId(user.nationalId))),
       DataCell((Text(user.isDoctor ? 'Medico' : 'Usuario'))),
       DataCell(Text('${Formatters.totalAmount(user.historial.toList())}')),
-      const DataCell(Text('5%')),
+       DataCell(Text('${Functions.discountFormat(user.historial.toList())}\$')),
       DataCell(Row(
         children: [
           Tooltip(

@@ -49,4 +49,9 @@ class UserRepositoryImpl implements UserRepository{
   Stream<List<UserHistorial>> getHistorial( int userId, [String query = '']) async* {
     yield* datasource.getHistorial(userId, query) ;
   }
+  
+  @override
+  Future<void> deleteAllHistorial(int userId) {
+    return datasource.deleteAllHistorial(userId);
+  }
 }

@@ -18,7 +18,7 @@ class NewHistorialDialog extends ConsumerWidget {
     return AlertDialog(
       title: Text('Nuevo registro para ${userForm.firstName.value}'),
       content: SizedBox(
-        width: 350,
+        width: 400,
         height: 100,
         child: Row(
           children: [
@@ -59,6 +59,13 @@ class NewHistorialDialog extends ConsumerWidget {
                 ],
               ),
               ),
+              const SizedBox(width: 14,),
+              FittedBox(child: CustomDrowdownButton(
+              label: '¿Usó el cupon?',
+              initialSelection: false,
+              // onSelected: userFormNotifier.onTypeUserChanged,
+              borderColor: colors.onSurface,
+            )),
           ],
         ),
       ),

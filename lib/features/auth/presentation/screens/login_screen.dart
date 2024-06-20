@@ -77,7 +77,7 @@ class LoginScreen extends ConsumerWidget {
               const SizedBox(height: 40,),
               CustomAuthButton(
                 text: 'Cancelar', onPressed: (){
-                context.push('/');
+                context.go('/');
               },
               bgColor: colors.error,)
             ],

@@ -156,4 +156,18 @@ class UserDatasourceImpl implements UserDatasource{
       throw Exception();
     } 
   }
+  
+  @override
+  Future<void> deleteAllHistorial(int userId) async {
+    final isar = await db;
+
+    try {
+      await isar.writeTxn(() async {
+        await isar.userHistorials.filter().user( (user) => user.idEqualTo(userId) ).deleteAll();
+      });
+    } catch (e) {
+      throw CustomError(message: 'Error no controlado');
+    }
+
+  }
 }

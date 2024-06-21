@@ -1,10 +1,14 @@
 
 
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:afiliados_app/config/config.dart';
 import 'package:afiliados_app/features/afiliation/domain/domain.dart';
 import 'package:afiliados_app/features/afiliation/infrastructure/infrastructure.dart';
 import 'package:isar/isar.dart';
+import 'package:path_provider/path_provider.dart';
 
 class UserDatasourceImpl implements UserDatasource{
 
@@ -168,6 +172,32 @@ class UserDatasourceImpl implements UserDatasource{
     } catch (e) {
       throw CustomError(message: 'Error no controlado');
     }
+
+  }
+  
+  @override
+  Future<void> exportData() async {
+    final isar = await db;
+
+    final directory = await getApplicationDocumentsDirectory();
+      final path = directory.path;
+      final file = File('$path/isar_export.json');
+      print(file);
+      print(path);
+
+      // Obtener los datos de la base de datos
+      final users = await isar.users.where().findAll();
+      final historial = await isar.userHistorials.where().findAll();
+
+      // Convertir los datos a JSON
+      final jsonUsers = jsonEncode(users.map((e) => e.toJson()).toList());
+      final jsonHistorial = jsonEncode(historial.map((e) => e.toJson()).toList());
+
+      // Escribir los datos en el archivo
+      await file.writeAsString(jsonUsers);
+      await file.writeAsString(jsonHistorial);
+
+
 
   }
 }

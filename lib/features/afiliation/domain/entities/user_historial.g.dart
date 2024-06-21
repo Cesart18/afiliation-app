@@ -75,7 +75,12 @@ int _userHistorialEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.billNumber.length * 3;
+  {
+    final value = object.billNumber;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -96,11 +101,12 @@ UserHistorial _userHistorialDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = UserHistorial();
-  object.amount = reader.readDouble(offsets[0]);
-  object.billNumber = reader.readString(offsets[1]);
-  object.date = reader.readDateTime(offsets[2]);
-  object.id = id;
+  final object = UserHistorial(
+    amount: reader.readDoubleOrNull(offsets[0]),
+    billNumber: reader.readStringOrNull(offsets[1]),
+    date: reader.readDateTimeOrNull(offsets[2]),
+    id: id,
+  );
   return object;
 }
 
@@ -112,11 +118,11 @@ P _userHistorialDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDouble(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 1:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -137,39 +143,39 @@ void _userHistorialAttach(
 }
 
 extension UserHistorialByIndex on IsarCollection<UserHistorial> {
-  Future<UserHistorial?> getByBillNumber(String billNumber) {
+  Future<UserHistorial?> getByBillNumber(String? billNumber) {
     return getByIndex(r'billNumber', [billNumber]);
   }
 
-  UserHistorial? getByBillNumberSync(String billNumber) {
+  UserHistorial? getByBillNumberSync(String? billNumber) {
     return getByIndexSync(r'billNumber', [billNumber]);
   }
 
-  Future<bool> deleteByBillNumber(String billNumber) {
+  Future<bool> deleteByBillNumber(String? billNumber) {
     return deleteByIndex(r'billNumber', [billNumber]);
   }
 
-  bool deleteByBillNumberSync(String billNumber) {
+  bool deleteByBillNumberSync(String? billNumber) {
     return deleteByIndexSync(r'billNumber', [billNumber]);
   }
 
   Future<List<UserHistorial?>> getAllByBillNumber(
-      List<String> billNumberValues) {
+      List<String?> billNumberValues) {
     final values = billNumberValues.map((e) => [e]).toList();
     return getAllByIndex(r'billNumber', values);
   }
 
-  List<UserHistorial?> getAllByBillNumberSync(List<String> billNumberValues) {
+  List<UserHistorial?> getAllByBillNumberSync(List<String?> billNumberValues) {
     final values = billNumberValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'billNumber', values);
   }
 
-  Future<int> deleteAllByBillNumber(List<String> billNumberValues) {
+  Future<int> deleteAllByBillNumber(List<String?> billNumberValues) {
     final values = billNumberValues.map((e) => [e]).toList();
     return deleteAllByIndex(r'billNumber', values);
   }
 
-  int deleteAllByBillNumberSync(List<String> billNumberValues) {
+  int deleteAllByBillNumberSync(List<String?> billNumberValues) {
     final values = billNumberValues.map((e) => [e]).toList();
     return deleteAllByIndexSync(r'billNumber', values);
   }
@@ -273,7 +279,29 @@ extension UserHistorialQueryWhere
   }
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
-      billNumberEqualTo(String billNumber) {
+      billNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'billNumber',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
+      billNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'billNumber',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
+      billNumberEqualTo(String? billNumber) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'billNumber',
@@ -283,7 +311,7 @@ extension UserHistorialQueryWhere
   }
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterWhereClause>
-      billNumberNotEqualTo(String billNumber) {
+      billNumberNotEqualTo(String? billNumber) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -321,8 +349,26 @@ extension UserHistorialQueryWhere
 extension UserHistorialQueryFilter
     on QueryBuilder<UserHistorial, UserHistorial, QFilterCondition> {
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      amountIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'amount',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      amountIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'amount',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       amountEqualTo(
-    double value, {
+    double? value, {
     double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -336,7 +382,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       amountGreaterThan(
-    double value, {
+    double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
@@ -352,7 +398,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       amountLessThan(
-    double value, {
+    double? value, {
     bool include = false,
     double epsilon = Query.epsilon,
   }) {
@@ -368,8 +414,8 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       amountBetween(
-    double lower,
-    double upper, {
+    double? lower,
+    double? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     double epsilon = Query.epsilon,
@@ -387,8 +433,26 @@ extension UserHistorialQueryFilter
   }
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'billNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      billNumberIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'billNumber',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       billNumberEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -402,7 +466,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       billNumberGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -418,7 +482,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       billNumberLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -434,8 +498,8 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       billNumberBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -522,8 +586,26 @@ extension UserHistorialQueryFilter
     });
   }
 
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      dateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'date',
+      ));
+    });
+  }
+
+  QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
+      dateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'date',
+      ));
+    });
+  }
+
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition> dateEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'date',
@@ -534,7 +616,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       dateGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -548,7 +630,7 @@ extension UserHistorialQueryFilter
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition>
       dateLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -561,8 +643,8 @@ extension UserHistorialQueryFilter
   }
 
   QueryBuilder<UserHistorial, UserHistorial, QAfterFilterCondition> dateBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -791,19 +873,19 @@ extension UserHistorialQueryProperty
     });
   }
 
-  QueryBuilder<UserHistorial, double, QQueryOperations> amountProperty() {
+  QueryBuilder<UserHistorial, double?, QQueryOperations> amountProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'amount');
     });
   }
 
-  QueryBuilder<UserHistorial, String, QQueryOperations> billNumberProperty() {
+  QueryBuilder<UserHistorial, String?, QQueryOperations> billNumberProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'billNumber');
     });
   }
 
-  QueryBuilder<UserHistorial, DateTime, QQueryOperations> dateProperty() {
+  QueryBuilder<UserHistorial, DateTime?, QQueryOperations> dateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'date');
     });

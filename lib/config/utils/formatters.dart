@@ -15,7 +15,7 @@ class Formatters {
   double totalAmount = 0;
   final listHistorial = historial.toList();
     for ( int i = 0; i < listHistorial.length; i++ ){
-      totalAmount += listHistorial[i].amount;
+      totalAmount += listHistorial[i].amount ?? 0;
     }
   return totalAmount;
 }

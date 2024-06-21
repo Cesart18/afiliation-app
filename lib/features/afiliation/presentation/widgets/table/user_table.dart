@@ -22,18 +22,18 @@ class UserTable extends ConsumerWidget {
     switch(sortState.columnIndex){
       case 1: 
       sortedHistorial.sort((a, b) => sortState.ascending
-          ? a.date.compareTo(b.date)
-          : b.date.compareTo(a.date));
+          ? a.date!.compareTo(b.date ?? DateTime.now())
+          : b.date!.compareTo(a.date ?? DateTime.now()));
       break;
       case 2:
       sortedHistorial.sort((a, b) => sortState.ascending
-          ? a.amount.compareTo(b.amount)
-          : b.amount.compareTo(a.amount));
+          ? a.amount!.compareTo(b.amount ?? 0)
+          : b.amount!.compareTo(a.amount ?? 0));
       break;
       case 3:
       sortedHistorial.sort(( a, b ) {
-        final billAasInt = int.tryParse(a.billNumber) ?? 0;
-        final billBasInt = int.tryParse(b.billNumber) ?? 0;
+        final billAasInt = int.tryParse(a.billNumber ?? '0') ?? 0;
+        final billBasInt = int.tryParse(b.billNumber ?? '0') ?? 0;
         return sortState.ascending
         ? billAasInt.compareTo(billBasInt)
         : billBasInt.compareTo(billBasInt);
@@ -109,9 +109,9 @@ DataRow _customDataRow(UserHistorial historial, BuildContext context, WidgetRef 
   final authStatus = ref.watch(authProvider).authStatus;
     return  DataRow(
       cells: [
-      DataCell(Text(Formatters.formatDateTime(historial.date))),
+      DataCell(Text(Formatters.formatDateTime(historial.date ?? DateTime.now()))),
       DataCell(Text('${historial.amount}\$')),
-      DataCell(Text(historial.billNumber)),
+      DataCell(Text(historial.billNumber ?? '0')),
       if( authStatus == AuthStatus.authenticated )
       DataCell(Tooltip(
             message: 'Eliminar registro',

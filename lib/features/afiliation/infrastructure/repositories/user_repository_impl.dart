@@ -54,4 +54,9 @@ class UserRepositoryImpl implements UserRepository{
   Future<void> deleteAllHistorial(int userId) {
     return datasource.deleteAllHistorial(userId);
   }
+  
+  @override
+  Future<void> exportData() {
+    return datasource.exportData();
+  }
 }

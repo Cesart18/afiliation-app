@@ -14,4 +14,5 @@ abstract class UserDatasource {
   Future<void> deleteAllHistorial( int userId );
   Stream<List<User>> getUsers([ String query = '' ]);
   Stream<List<UserHistorial>> getHistorial( int userId, [ String query = '' ]);
+  Future<void> exportData();
 } 

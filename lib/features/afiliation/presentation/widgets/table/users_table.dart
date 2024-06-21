@@ -40,22 +40,22 @@ class _TableBody extends ConsumerWidget {
       /// nombre
       case 1:
         sortedUsers.sort((a, b) => sortState.ascending
-            ? a.firstName.compareTo(b.firstName)
-            : b.firstName.compareTo(a.firstName));
+            ? a.firstName!.compareTo(b.firstName ?? '')
+            : b.firstName!.compareTo(a.firstName ?? ''));
         break;
 
       /// apellido
       case 2:
         sortedUsers.sort((a, b) => sortState.ascending
-            ? a.lastName.compareTo(b.lastName)
-            : b.lastName.compareTo(a.lastName));
+            ? a.lastName!.compareTo(b.lastName ?? '')
+            : b.lastName!.compareTo(a.lastName ?? ''));
         break;
 
       /// cedula
       case 3:
         sortedUsers.sort((a, b) {
-          int nationalIdA = int.tryParse(a.nationalId) ?? 0;
-          int nationalIdB = int.tryParse(b.nationalId) ?? 0;
+          int nationalIdA = int.tryParse(a.nationalId ?? '0') ?? 0;
+          int nationalIdB = int.tryParse(b.nationalId ?? '0') ?? 0;
           return sortState.ascending
               ? nationalIdA.compareTo(nationalIdB)
               : nationalIdB.compareTo(nationalIdA);
@@ -73,13 +73,13 @@ class _TableBody extends ConsumerWidget {
       case 5:
         sortedUsers.sort((a, b) => sortState.ascending
             ? a.historial
-                .fold(0, (sum, item) => sum + item.amount.round())
+                .fold(0, (sum, item) => sum + item.amount!.round())
                 .compareTo(
-                    b.historial.fold(0, (sum, item) => sum + item.amount))
+                    b.historial.fold(0, (sum, item) => sum + item.amount!))
             : b.historial
-                .fold(0, (sum, item) => sum + item.amount.round())
+                .fold(0, (sum, item) => sum + item.amount!.round())
                 .compareTo(
-                    a.historial.fold(0, (sum, item) => sum + item.amount)));
+                    a.historial.fold(0, (sum, item) => sum + item.amount!)));
         break;
     }
 
@@ -177,10 +177,10 @@ class _TableBody extends ConsumerWidget {
               )),
         ),
       ),
-      DataCell(Text(Formatters.firstLetterToUpper(user.firstName))),
-      DataCell(Text(Formatters.firstLetterToUpper(user.lastName))),
-      DataCell(Text(Formatters.formatNationalId(user.nationalId))),
-      DataCell((Text(user.isDoctor ? 'Medico' : 'Usuario'))),
+      DataCell(Text(Formatters.firstLetterToUpper(user.firstName ?? ''))),
+      DataCell(Text(Formatters.firstLetterToUpper(user.lastName ?? ''))),
+      DataCell(Text(Formatters.formatNationalId(user.nationalId ?? '0'))),
+      DataCell((Text(user.isDoctor ?? false ? 'Medico' : 'Usuario'))),
       DataCell(Text('${Formatters.totalAmount(user.historial.toList())}')),
        DataCell(Text('${Functions.discountFormat(user.historial.toList())}\$')),
       DataCell(Row(
@@ -205,7 +205,7 @@ class _TableBody extends ConsumerWidget {
                       context,
                       DeleteDialog(
                         firstName:
-                            'a ${Formatters.firstLetterToUpper(user.firstName)}',
+                            'a ${Formatters.firstLetterToUpper(user.firstName ?? 'hola')}',
                         callback: () => ref
                             .read(usersProvider.notifier)
                             .deleteUser(user.id ?? 0),

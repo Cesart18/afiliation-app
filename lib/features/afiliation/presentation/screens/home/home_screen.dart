@@ -29,6 +29,13 @@ class HomeScreen extends ConsumerWidget {
         shadowColor: colors.surface,
         surfaceTintColor: colors.surface,
         actions: [
+          Tooltip(
+            message: 'Exportar',
+            child: IconButton(onPressed: (){
+              ref.read(usersProvider.notifier).exportData();
+            }, icon: Icon(  Icons.upload ,
+            color: colors.onSurface,)),
+          ),
           if( authStatus == AuthStatus.authenticated )
           Tooltip(
             message: 'Cerrar sesion',

@@ -79,9 +79,24 @@ int _userEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.firstName.length * 3;
-  bytesCount += 3 + object.lastName.length * 3;
-  bytesCount += 3 + object.nationalId.length * 3;
+  {
+    final value = object.firstName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.lastName;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.nationalId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -103,12 +118,13 @@ User _userDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = User();
-  object.firstName = reader.readString(offsets[0]);
-  object.id = id;
-  object.isDoctor = reader.readBool(offsets[1]);
-  object.lastName = reader.readString(offsets[2]);
-  object.nationalId = reader.readString(offsets[3]);
+  final object = User(
+    firstName: reader.readStringOrNull(offsets[0]),
+    id: id,
+    isDoctor: reader.readBoolOrNull(offsets[1]),
+    lastName: reader.readStringOrNull(offsets[2]),
+    nationalId: reader.readStringOrNull(offsets[3]),
+  );
   return object;
 }
 
@@ -120,13 +136,13 @@ P _userDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -147,38 +163,38 @@ void _userAttach(IsarCollection<dynamic> col, Id id, User object) {
 }
 
 extension UserByIndex on IsarCollection<User> {
-  Future<User?> getByNationalId(String nationalId) {
+  Future<User?> getByNationalId(String? nationalId) {
     return getByIndex(r'nationalId', [nationalId]);
   }
 
-  User? getByNationalIdSync(String nationalId) {
+  User? getByNationalIdSync(String? nationalId) {
     return getByIndexSync(r'nationalId', [nationalId]);
   }
 
-  Future<bool> deleteByNationalId(String nationalId) {
+  Future<bool> deleteByNationalId(String? nationalId) {
     return deleteByIndex(r'nationalId', [nationalId]);
   }
 
-  bool deleteByNationalIdSync(String nationalId) {
+  bool deleteByNationalIdSync(String? nationalId) {
     return deleteByIndexSync(r'nationalId', [nationalId]);
   }
 
-  Future<List<User?>> getAllByNationalId(List<String> nationalIdValues) {
+  Future<List<User?>> getAllByNationalId(List<String?> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return getAllByIndex(r'nationalId', values);
   }
 
-  List<User?> getAllByNationalIdSync(List<String> nationalIdValues) {
+  List<User?> getAllByNationalIdSync(List<String?> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'nationalId', values);
   }
 
-  Future<int> deleteAllByNationalId(List<String> nationalIdValues) {
+  Future<int> deleteAllByNationalId(List<String?> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return deleteAllByIndex(r'nationalId', values);
   }
 
-  int deleteAllByNationalIdSync(List<String> nationalIdValues) {
+  int deleteAllByNationalIdSync(List<String?> nationalIdValues) {
     final values = nationalIdValues.map((e) => [e]).toList();
     return deleteAllByIndexSync(r'nationalId', values);
   }
@@ -274,8 +290,28 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
     });
   }
 
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'nationalId',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterWhereClause> nationalIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'nationalId',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterWhereClause> nationalIdEqualTo(
-      String nationalId) {
+      String? nationalId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'nationalId',
@@ -285,7 +321,7 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
   }
 
   QueryBuilder<User, User, QAfterWhereClause> nationalIdNotEqualTo(
-      String nationalId) {
+      String? nationalId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -321,8 +357,24 @@ extension UserQueryWhere on QueryBuilder<User, User, QWhereClause> {
 }
 
 extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
+  QueryBuilder<User, User, QAfterFilterCondition> firstNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> firstNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'firstName',
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> firstNameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -335,7 +387,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> firstNameGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -350,7 +402,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> firstNameLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -365,8 +417,8 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> firstNameBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -519,7 +571,23 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
-  QueryBuilder<User, User, QAfterFilterCondition> isDoctorEqualTo(bool value) {
+  QueryBuilder<User, User, QAfterFilterCondition> isDoctorIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'isDoctor',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> isDoctorIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'isDoctor',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> isDoctorEqualTo(bool? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isDoctor',
@@ -528,8 +596,24 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
+  QueryBuilder<User, User, QAfterFilterCondition> lastNameIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastName',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> lastNameIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastName',
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> lastNameEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -542,7 +626,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> lastNameGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -557,7 +641,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> lastNameLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -572,8 +656,8 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> lastNameBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -657,8 +741,24 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
     });
   }
 
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'nationalId',
+      ));
+    });
+  }
+
+  QueryBuilder<User, User, QAfterFilterCondition> nationalIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'nationalId',
+      ));
+    });
+  }
+
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -671,7 +771,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -686,7 +786,7 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -701,8 +801,8 @@ extension UserQueryFilter on QueryBuilder<User, User, QFilterCondition> {
   }
 
   QueryBuilder<User, User, QAfterFilterCondition> nationalIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -996,25 +1096,25 @@ extension UserQueryProperty on QueryBuilder<User, User, QQueryProperty> {
     });
   }
 
-  QueryBuilder<User, String, QQueryOperations> firstNameProperty() {
+  QueryBuilder<User, String?, QQueryOperations> firstNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'firstName');
     });
   }
 
-  QueryBuilder<User, bool, QQueryOperations> isDoctorProperty() {
+  QueryBuilder<User, bool?, QQueryOperations> isDoctorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isDoctor');
     });
   }
 
-  QueryBuilder<User, String, QQueryOperations> lastNameProperty() {
+  QueryBuilder<User, String?, QQueryOperations> lastNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastName');
     });
   }
 
-  QueryBuilder<User, String, QQueryOperations> nationalIdProperty() {
+  QueryBuilder<User, String?, QQueryOperations> nationalIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'nationalId');
     });

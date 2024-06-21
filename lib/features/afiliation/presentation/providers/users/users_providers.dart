@@ -83,6 +83,11 @@ class UsersNotifier extends StateNotifier<UsersState> {
       _onGetError( 'Error no controlado' );
     }
   }
+
+  Future<void> exportData() async {
+    await userRepository.exportData();
+  }
+
   _onGetError([String value = '' ]){
     state = state.copyWith(
       errorMessage: value

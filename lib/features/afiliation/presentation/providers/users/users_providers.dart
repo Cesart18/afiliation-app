@@ -85,7 +85,19 @@ class UsersNotifier extends StateNotifier<UsersState> {
   }
 
   Future<void> exportData() async {
-    await userRepository.exportData();
+    try {
+      await userRepository.exportData();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }
+  }
+
+  Future<void> importData() async {
+    try {
+      await userRepository.importData();
+    } on CustomError catch (e) {
+      _onGetError(e.message);
+    }
   }
 
   _onGetError([String value = '' ]){

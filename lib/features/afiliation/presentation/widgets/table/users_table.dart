@@ -177,8 +177,8 @@ class _TableBody extends ConsumerWidget {
               )),
         ),
       ),
-      DataCell(Text(Formatters.firstLetterToUpper(user.firstName ?? ''))),
-      DataCell(Text(Formatters.firstLetterToUpper(user.lastName ?? ''))),
+      DataCell(Text(Formatters.firstLetterToUpper(user.firstName ?? 'No hay'))),
+      DataCell(Text(Formatters.firstLetterToUpper(user.lastName ?? 'No hay'))),
       DataCell(Text(Formatters.formatNationalId(user.nationalId ?? '0'))),
       DataCell((Text(user.isDoctor ?? false ? 'Medico' : 'Usuario'))),
       DataCell(Text('${Formatters.totalAmount(user.historial.toList())}')),
@@ -205,7 +205,7 @@ class _TableBody extends ConsumerWidget {
                       context,
                       DeleteDialog(
                         firstName:
-                            'a ${Formatters.firstLetterToUpper(user.firstName ?? 'hola')}',
+                            'a ${Formatters.firstLetterToUpper(user.firstName ?? 'No hay')}',
                         callback: () => ref
                             .read(usersProvider.notifier)
                             .deleteUser(user.id ?? 0),

@@ -59,4 +59,9 @@ class UserRepositoryImpl implements UserRepository{
   Future<void> exportData() {
     return datasource.exportData();
   }
+  
+  @override
+  Future<void> importData() {
+    return datasource.importData();
+  }
 }

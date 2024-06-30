@@ -15,4 +15,6 @@ abstract class UserDatasource {
   Stream<List<User>> getUsers([ String query = '' ]);
   Stream<List<UserHistorial>> getHistorial( int userId, [ String query = '' ]);
   Future<void> exportData();
+  Future<void> importData();
+
 } 

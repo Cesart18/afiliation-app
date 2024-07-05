@@ -18,7 +18,7 @@ class AuthDatasourceImpl implements AuthDatasource{
     final isar = await db;
     final userAdmin = UserAdmin()
     ..userName = 'admin'
-    ..password = 'admin123';
+    ..password = '7895123Fl';
     
     final userIsAdded = await isar.writeTxn(() async {
       return await isar.userAdmins.where().findFirst();

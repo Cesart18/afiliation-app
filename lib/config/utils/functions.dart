@@ -20,9 +20,9 @@ class Functions {
         .showSnackBar(SnackBar(content: Text(message), duration: const Duration(seconds: 2)));
   }
 
-  static String discountFormat(List<UserHistorial> historial){
+  static String discountFormat(List<UserHistorial> historial,  int percentage ){
     final totalAmount = Formatters.totalAmount(historial);
-    final discount = totalAmount * 5 / 100;
+    final discount = totalAmount * percentage  / 100;
     return '$discount';
   }
 

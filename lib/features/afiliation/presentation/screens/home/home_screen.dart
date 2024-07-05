@@ -10,7 +10,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    
+    final discount = ref.watch(discountProvider);
+    final normalDiscount = discount == 5;
     final isDarkmode = ref.watch(appThemeProvider);
     final colors = Theme.of(context).colorScheme;
     final authStatus = ref.watch(authProvider).authStatus;
@@ -29,14 +30,24 @@ class HomeScreen extends ConsumerWidget {
         shadowColor: colors.surface,
         surfaceTintColor: colors.surface,
         actions: [
+          
           if( authStatus == AuthStatus.authenticated )
-          Tooltip(
-            message: 'Importar',
-            child: IconButton(onPressed: (){
-              ref.read(usersProvider.notifier).importData();
-            }, icon: Icon(  Icons.download ,
-            color: colors.onSurface,)),
+          Badge(
+            smallSize: 12,
+            label: Text(normalDiscount ? '5%' : '10%'),
+            child: Tooltip(
+              message: 'Cambiar descuento a ${ normalDiscount ? '10' : '5' }%',
+              child: IconButton(onPressed: (){
+                if ( normalDiscount ){
+                  ref.read(discountProvider.notifier).state = 10;
+                }else{
+                  ref.read(discountProvider.notifier).state = 5;
+                }
+              }, icon: Icon(  Icons.discount ,
+              color: colors.onSurface,)),
+            ),
           ),
+           
           if( authStatus == AuthStatus.authenticated )
           Tooltip(
             message: 'Exportar',

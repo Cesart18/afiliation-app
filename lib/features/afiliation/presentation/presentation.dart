@@ -21,6 +21,8 @@ export 'providers/sort/sort_user_provider.dart';
 export 'providers/sort/sort_historial_provider.dart';
 // streams
 export 'providers/users/streams_providers.dart';
+// discount
+export 'providers/discount/discount_provider.dart';
 
 
 //* widgets

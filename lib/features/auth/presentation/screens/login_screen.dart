@@ -24,6 +24,14 @@ class LoginScreen extends ConsumerWidget {
   });
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Tooltip(
+            message: 'Salir',
+            child: IconButton(onPressed: () => context.go('/'), icon: const Icon(Icons.logout)),
+          )
+        ],
+      ),
       body: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -74,12 +82,8 @@ class LoginScreen extends ConsumerWidget {
               CustomAuthButton(text: 'Ingresar', onPressed: (){
                 loginFormRead.onFormSubmit();
               }),
-              const SizedBox(height: 40,),
-              CustomAuthButton(
-                text: 'Cancelar', onPressed: (){
-                context.go('/');
-              },
-              bgColor: colors.error,)
+
+             
             ],
           ),
         ),

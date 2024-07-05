@@ -161,7 +161,8 @@ class _TableBody extends ConsumerWidget {
     );
   }
 
-  DataRow _customDataRow(User user, BuildContext context, WidgetRef ref) {
+  DataRow _customDataRow(User user, BuildContext context, WidgetRef ref,) {
+    final discount = ref.watch(discountProvider);
     final authStatus = ref.watch(authProvider).authStatus;
     return DataRow(cells: [
       DataCell(
@@ -182,7 +183,7 @@ class _TableBody extends ConsumerWidget {
       DataCell(Text(Formatters.formatNationalId(user.nationalId ?? '0'))),
       DataCell((Text(user.isDoctor ?? false ? 'Medico' : 'Usuario'))),
       DataCell(Text('${Formatters.totalAmount(user.historial.toList())}')),
-       DataCell(Text('${Functions.discountFormat(user.historial.toList())}\$')),
+       DataCell(Text('${Functions.discountFormat(user.historial.toList(),discount)}\$')),
       DataCell(Row(
         children: [
           Tooltip(
